@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".navdrawer.cashdrawer.cashadded.CashAddedFragment">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="Cash Added"
+            style="@style/TextAppearance.MaterialComponents.Headline6"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:errorEnabled="true"
+                android:id="@+id/edtCashAdded"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/amount"
+                    android:inputType="number"/>
+            </com.google.android.material.textfield.TextInputLayout>
+            <Button
+                android:id="@+id/buttonAddCash"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Add cash"
+                android:layout_gravity="top"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_weight="1"/>
+        </LinearLayout>
+        <ListView
+            android:id="@+id/listCashAdded"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+
+
+</FrameLayout>

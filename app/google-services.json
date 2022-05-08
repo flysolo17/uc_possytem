@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "453138132888",
+    "project_id": "irish-project-39113",
+    "storage_bucket": "irish-project-39113.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:453138132888:android:01ea8da95a19aa8c0585ed",
+        "android_client_info": {
+          "package_name": "com.flysolo.cashregister"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "453138132888-fthc7js9mhdaom577nfjn9tgi5ac51uo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVGqwwrE0AJNaNpkvk9NrKdRQgSIVjQ3w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "453138132888-fthc7js9mhdaom577nfjn9tgi5ac51uo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
