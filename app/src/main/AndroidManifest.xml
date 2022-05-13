@@ -6,10 +6,15 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
+
+    <queries>
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE" />
+        </intent>
+    </queries>
 
     <application
         android:name=".firebase.FirebaseOffline"
@@ -20,7 +25,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CashRegister">
-
+        <activity
+            android:name=".activities.CashDrawerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.Transaction"
+            android:exported="false" />
+        <activity
+            android:name=".activities.Pos"
+            android:exported="false" />
+        <activity
+            android:name=".activities.Inventory"
+            android:exported="false" />
+        <activity
+            android:name=".activities.UpdateAccount"
+            android:exported="false" />
         <activity
             android:name=".mystore.MyStoreActivity"
             android:exported="false" />
@@ -44,17 +63,16 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.CashRegister.NoActionBarAndStatusBar" />
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="fullSensor"
             tools:replace="screenOrientation" />
-    </application>
 
-    <queries>
-        <intent>
-            <action android:name="android.media.action.IMAGE_CAPTURE" />
-        </intent>
-    </queries>
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
+    </application>
 
 </manifest>

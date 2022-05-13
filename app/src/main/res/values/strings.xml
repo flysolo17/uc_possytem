@@ -10,7 +10,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="home">Home</string>
     <string name="log_out">log Out</string>
-    <string name="inventory">Inventory</string>
     <string name="profile">Profile</string>
     <string name="owner_name">Owner Name</string>
     <string name="business_name">Business Name</string>
@@ -66,8 +65,8 @@
     <string name="create_cashier_account">Create Cashier Account</string>
 
     <string name="lock">lock</string>
-    <string name="do_not_share_your_pin_to_everyone">Do not share your Pin to everyone</string>
-    <string name="enter_your_pin">ENTER YOUR PIN</string>
+    <string name="do_not_share_your_pin_to_everyone">Do not share your pin to everyone</string>
+    <string name="enter_your_pin">Enter your pin</string>
     <string name="reset">Reset</string>
     <string name="decrease_quantity">Decrease Quantity</string>
     <string name="_1">1</string>
@@ -126,5 +125,21 @@
     <string name="scan_item">Scan Item</string>
     <string name="store_pin">Store Pin</string>
     <string name="add_stocks">Add Stocks</string>
-
+    <string name="inventory">Inventory</string>
+    <string name="features">Features</string>
+    <string name="update_store_profile">Update Store Profile</string>
+    <string name="back">back</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="gallery">gallery</string>
+    <string name="camera">camera</string>
+    <string name="itemss">Items :</string>
+    <string name="enter_your_4_digit_pin">Enter your 4 digit pin</string>
+    <string name="submit">Submit</string>
+    <string name="pos_system">Pos System</string>
+    <string name="view_items">view items</string>
+    <string name="searc_item">Searc Item</string>
+    <string name="cash_sales">Cash Sales</string>
+    <string name="expenses">Expenses</string>
+    <string name="receipt">Receipt</string>
+    <string name="cash">Cash</string>
 </resources>

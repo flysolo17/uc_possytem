@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="itemPurchased"
+            type="com.flysolo.cashregister.firebase.models.ItemPurchased" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/itemPurchasedQuantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{String.valueOf(itemPurchased.itemPurchasedQuantity)}"
+            android:textSize="16sp"
+            android:layout_margin="5dp"
+            android:fontFamily="@font/poppins_semibold"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/itemPurchaseName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+
+            android:fontFamily="@font/poppins_semibold"
+            android:text="@{itemPurchased.itemPurchasedName}"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/itemPurchasedTotal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{String.valueOf(itemPurchased.itemPurchasedPrice)}"
+            android:textSize="16sp"
+            android:layout_margin="5dp"
+            android:fontFamily="@font/poppins_semibold"
+            android:textColor="@color/black" />
+
+
+    </LinearLayout>
+</layout>
+
+

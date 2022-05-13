@@ -4,7 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
-import com.flysolo.cashregister.dialogs.ProgressDialog
+import com.flysolo.cashregister.dialog.ProgressDialog
 import com.flysolo.cashregister.databinding.ActivityCreateAccountBinding
 import com.flysolo.cashregister.firebase.FirebaseQueries
 import com.flysolo.cashregister.firebase.models.User

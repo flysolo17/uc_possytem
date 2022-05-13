@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="350dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+        <com.google.android.material.imageview.ShapeableImageView
+            android:layout_width="50dp"
+            android:id="@+id/cashierProfile"
+            android:clickable="true"
+            android:scaleType="centerCrop"
+            android:background="@drawable/store"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize10Percent"
+            android:layout_height="50dp"
+            android:focusable="true" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/textCashierName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/cashier_name"
+                android:textColor="@color/black"
+                android:fontFamily="@font/poppins_semibold"
+                android:textSize="18sp"
+                />
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/enter_your_4_digit_pin"
+                android:fontFamily="@font/poppins_medium"/>
+
+            <EditText
+                android:id="@+id/inputPinCode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:maxLength="4"
+                android:labelFor="@+id/inputPinCode"
+                android:autofillHints="no" />
+        </LinearLayout>
+    </LinearLayout>
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:orientation="horizontal"
+       android:layout_marginTop="10dp"
+       android:gravity="end">
+
+       <Button
+           style="@style/Widget.MaterialComponents.Button.TextButton"
+           android:id="@+id/buttonCancel"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="@string/cancel"
+           android:textColor="#E57373" />
+       <Button
+           android:id="@+id/buttonSave"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           style="@style/Widget.MaterialComponents.Button.TextButton"
+           android:text="@string/submit"/>
+   </LinearLayout>
+</LinearLayout>

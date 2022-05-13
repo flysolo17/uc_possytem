@@ -8,5 +8,6 @@ class Cashier(
 ) {
 companion object {
     const val TABLE_NAME = "Cashier"
+    const val CASHIER_NAME = "cashierName"
 }
 }

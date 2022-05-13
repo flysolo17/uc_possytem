@@ -1,7 +1,5 @@
 package com.flysolo.cashregister.firebase.models
 
-import com.flysolo.cashregister.purchases.ItemPurchased
-
 class Transaction(
     val transactionID: String? = null,
     val transactionCashier: String ? = null,

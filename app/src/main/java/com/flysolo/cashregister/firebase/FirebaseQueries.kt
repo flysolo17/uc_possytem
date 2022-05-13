@@ -1,25 +1,22 @@
 package com.flysolo.cashregister.firebase
-import android.content.ClipData
 import android.content.Context
 import android.widget.Toast
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.flysolo.cashregister.cashierlogin.CashierLoginActivity
+
 import com.flysolo.cashregister.firebase.models.*
-import com.flysolo.cashregister.purchases.ItemPurchased
-import com.google.android.gms.tasks.OnCompleteListener
+import com.flysolo.cashregister.login.LoginActivity
+import com.flysolo.cashregister.firebase.models.ItemPurchased
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.ServerTimestamp
-import java.text.FieldPosition
 
 class FirebaseQueries(val context: Context,val firebaseFirestore: FirebaseFirestore) {
 
     fun generateID(TABLE_NAME: String?): String {
         return firebaseFirestore
             .collection(User.TABLE_NAME)
-            .document(CashierLoginActivity.userID!!)
+            .document(LoginActivity.uid)
             .collection(TABLE_NAME!!).document().id
     }
     fun createAccount(user: User) {
@@ -35,7 +32,7 @@ class FirebaseQueries(val context: Context,val firebaseFirestore: FirebaseFirest
 
         fun addItem(item: Items) {
             firebaseFirestore.collection(User.TABLE_NAME)
-                .document(CashierLoginActivity.userID!!)
+                .document(LoginActivity.uid)
                 .collection(Items.TABLE_NAME)
                 .document(item.itemBarcode!!).set(item).addOnCompleteListener { task: Task<Void?> ->
                     if (task.isSuccessful) {
@@ -48,34 +45,14 @@ class FirebaseQueries(val context: Context,val firebaseFirestore: FirebaseFirest
         }
 
 
-     fun getAllItems(userID: String): FirestoreRecyclerOptions<Items?> {
-        val query: Query = FirebaseFirestore.getInstance()
-            .collection(User.TABLE_NAME)
-            .document(userID)
-            .collection(Items.TABLE_NAME)
-        return FirestoreRecyclerOptions.Builder<Items>()
-            .setQuery(query, Items::class.java)
-            .build()
-    }
 
-        fun deleteItem(id: String) {
-            firebaseFirestore.collection(User.TABLE_NAME)
-                .document(CashierLoginActivity.userID!!)
-                .collection(Items.TABLE_NAME)
-                .document(id).delete().addOnCompleteListener { task: Task<Void?> ->
-                    if (task.isSuccessful) {
-                        Toast.makeText(context, "Item deleted successfully..", Toast.LENGTH_SHORT)
-                            .show()
-                    } else {
-                        Toast.makeText(context, "Failed to delete item", Toast.LENGTH_SHORT).show()
-                    }
-                }
-        }
+
+
 
 
         fun addItemPurchased(itemPurchase: ItemPurchased) {
             firebaseFirestore.collection(User.TABLE_NAME)
-                .document(CashierLoginActivity.userID!!)
+                .document(LoginActivity.uid)
                 .collection(ItemPurchased.TABLE_NAME)
                 .document(itemPurchase.itemPurchasedID!!).set(itemPurchase)
                 .addOnCompleteListener { task: Task<Void?> ->
@@ -94,7 +71,7 @@ class FirebaseQueries(val context: Context,val firebaseFirestore: FirebaseFirest
 
         fun getItemPurchased(itemPurchase: ItemPurchased) {
             firebaseFirestore.collection(User.TABLE_NAME)
-                .document(CashierLoginActivity.userID!!)
+                .document(LoginActivity.uid)
                 .collection(ItemPurchased.TABLE_NAME)
                 .document(itemPurchase.itemPurchasedID!!).set(itemPurchase)
                 .addOnCompleteListener { task: Task<Void?> ->
@@ -112,7 +89,7 @@ class FirebaseQueries(val context: Context,val firebaseFirestore: FirebaseFirest
         }
     //Cashier
     fun createCashier(cashier: Cashier) {
-        firebaseFirestore.collection(User.TABLE_NAME).document(CashierLoginActivity.userID!!)
+        firebaseFirestore.collection(User.TABLE_NAME).document(LoginActivity.uid)
             .collection(Cashier.TABLE_NAME)
             .document(cashier.cashierID!!)
             .set(cashier)
@@ -136,7 +113,7 @@ class FirebaseQueries(val context: Context,val firebaseFirestore: FirebaseFirest
     }
     //Cashier
     fun createTransaction(transaction: Transaction) {
-        firebaseFirestore.collection(User.TABLE_NAME).document(CashierLoginActivity.userID!!)
+        firebaseFirestore.collection(User.TABLE_NAME).document(LoginActivity.uid)
             .collection(Transaction.TABLE_NAME)
             .document(transaction.transactionID!!)
             .set(transaction)
@@ -150,14 +127,14 @@ class FirebaseQueries(val context: Context,val firebaseFirestore: FirebaseFirest
     }
     fun decreaseQuantity(itemID : String , itemQuantity : Long){
         firebaseFirestore.collection(User.TABLE_NAME)
-            .document(CashierLoginActivity.userID!!)
+            .document(LoginActivity.uid)
             .collection(Items.TABLE_NAME)
             .document(itemID).update(Items.ITEM_QUANTITY,FieldValue.increment(-itemQuantity))
     }
     fun getAllTransactions(startDay : Long,endDay : Long): FirestoreRecyclerOptions<Transaction?> {
         val query: Query = firebaseFirestore
             .collection(User.TABLE_NAME)
-            .document(CashierLoginActivity.userID!!)
+            .document(LoginActivity.uid)
             .collection(Transaction.TABLE_NAME)
             .whereGreaterThan(Transaction.TIMESTAMP,startDay)
             .whereLessThan(Transaction.TIMESTAMP,endDay)
@@ -167,7 +144,7 @@ class FirebaseQueries(val context: Context,val firebaseFirestore: FirebaseFirest
             .build()
     }
     fun updateTransaction(transactionID : String,itemPurchasedList : List<ItemPurchased>) {
-        firebaseFirestore.collection(User.TABLE_NAME).document(CashierLoginActivity.userID!!)
+        firebaseFirestore.collection(User.TABLE_NAME).document(LoginActivity.uid)
             .collection(Transaction.TABLE_NAME)
             .document(transactionID)
             .update(Transaction.TRANSACTION_ITEMS,itemPurchasedList)
@@ -182,7 +159,7 @@ class FirebaseQueries(val context: Context,val firebaseFirestore: FirebaseFirest
     //Cashier
     fun signInAttendance(attendance: Attendance) {
         firebaseFirestore.collection(User.TABLE_NAME)
-            .document(CashierLoginActivity.userID!!)
+            .document(LoginActivity.uid)
             .collection(Attendance.TABLE_NAME)
             .document(attendance.attendanceID!!)
             .set(attendance)
@@ -197,11 +174,11 @@ class FirebaseQueries(val context: Context,val firebaseFirestore: FirebaseFirest
     //Cashier
     fun signOutAttendance(attendanceID : String,image : String,timestamp: Long) {
         firebaseFirestore.collection(User.TABLE_NAME)
-            .document(CashierLoginActivity.userID!!)
+            .document(LoginActivity.uid)
             .collection(Attendance.TABLE_NAME)
             .document(attendanceID).update(Attendance.TIMEOUT_IMAGE,image)
         firebaseFirestore.collection(User.TABLE_NAME)
-            .document(CashierLoginActivity.userID!!)
+            .document(LoginActivity.uid)
             .collection(Attendance.TABLE_NAME)
             .document(attendanceID).update(Attendance.TIMEOUT_TIMESTAMP,timestamp)
 
@@ -210,7 +187,7 @@ class FirebaseQueries(val context: Context,val firebaseFirestore: FirebaseFirest
     fun getAttendance(startDay: Long,endDay: Long): FirestoreRecyclerOptions<Attendance?> {
         val query: Query = firebaseFirestore
             .collection(User.TABLE_NAME)
-            .document(CashierLoginActivity.userID!!)
+            .document(LoginActivity.uid)
             .collection(Attendance.TABLE_NAME)
             .whereGreaterThan(Attendance.TIMEIN_TIMESTAMP,startDay)
             .whereLessThan(Attendance.TIMEIN_TIMESTAMP,endDay)
@@ -219,11 +196,11 @@ class FirebaseQueries(val context: Context,val firebaseFirestore: FirebaseFirest
             .setQuery(query, Attendance::class.java)
             .build()
     }
-    fun queryResult(itemName: String) : ItemPurchased{
+    fun queryResult(itemName: String) : ItemPurchased {
         var itemPurchased : ItemPurchased? = null
         val query = firebaseFirestore
             .collection(User.TABLE_NAME)
-            .document(CashierLoginActivity.userID!!)
+            .document(LoginActivity.uid)
             .collection(Items.TABLE_NAME)
             .whereEqualTo(Items.ITEM_NAME,itemName)
         query.get().addOnCompleteListener {
@@ -247,7 +224,7 @@ class FirebaseQueries(val context: Context,val firebaseFirestore: FirebaseFirest
     }
     fun updateProfile(uri: String){
         firebaseFirestore.collection(User.TABLE_NAME)
-            .document(CashierLoginActivity.userID!!)
+            .document(LoginActivity.uid)
             .update(User.STORE_IMAGE,uri)
             .addOnCompleteListener {
                 if (it.isSuccessful){

@@ -9,8 +9,8 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.flysolo.cashregister.cashierlogin.CashierLoginActivity
-import com.flysolo.cashregister.dialogs.ProgressDialog
+import com.flysolo.cashregister.MainActivity
+import com.flysolo.cashregister.dialog.ProgressDialog
 import com.flysolo.cashregister.databinding.ActivityLoginBinding
 import com.flysolo.cashregister.firebase.models.User
 import com.google.android.material.snackbar.Snackbar
@@ -26,6 +26,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var firebaseFirestore: FirebaseFirestore
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var validation: Validation
+
     private var progressDialog: ProgressDialog = ProgressDialog(this)
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -46,10 +47,6 @@ class LoginActivity : AppCompatActivity() {
                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
                     WRITE_STORAGE_PERMISSION_CODE
                 )
-            }
-        } else if (requestCode == WRITE_STORAGE_PERMISSION_CODE) {
-            if (!(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                Toast.makeText(this, "Write Permission Denied!", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -116,8 +113,9 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        val currentUser: FirebaseUser? = firebaseAuth.currentUser
+        var currentUser: FirebaseUser? = firebaseAuth.currentUser
         if (currentUser != null){
+            uid = currentUser.uid
             progressDialog.loading()
             updateUI(currentUser)
             progressDialog.stopLoading()
@@ -131,7 +129,8 @@ class LoginActivity : AppCompatActivity() {
 
     private fun updateUI(currentUser: FirebaseUser?) {
         if (currentUser != null){
-            val intent = Intent(this, CashierLoginActivity::class.java)
+            uid = currentUser.uid
+            val intent = Intent(this, MainActivity::class.java)
                 intent.putExtra(User.USER_ID,currentUser.uid)
             startActivity(intent)
         }
@@ -151,5 +150,7 @@ class LoginActivity : AppCompatActivity() {
         const val READ_STORAGE_PERMISSION_CODE = 101
         const val WRITE_STORAGE_PERMISSION_CODE = 102
         const val LOGIN_ACTIVITY : String = ".LoginActivity"
+         var uid = ""
+
     }
 }
