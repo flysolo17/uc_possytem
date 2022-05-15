@@ -39,6 +39,7 @@ class CreateAccountActivity : AppCompatActivity() {
         val firstname : String = binding.inputName.editText?.text.toString()
         val lastname : String = binding.inputLastName.editText?.text.toString()
         val businessName : String = binding.inputBusinessName.editText?.text.toString()
+        val pin : String = binding.inputPin.editText?.text.toString()
         val phoneNumber : String = binding.inputPhone.editText?.text.toString()
         val email : String = binding.inputEmail.editText?.text.toString()
         val password : String = binding.inputPassword.editText?.text.toString()
@@ -52,6 +53,9 @@ class CreateAccountActivity : AppCompatActivity() {
             }
             businessName.isEmpty() -> {
                 binding.inputBusinessName.error = "Input business name"
+            }
+            pin.isEmpty() -> {
+                binding.inputPhone.error = "Input store pin"
             }
             phoneNumber.isEmpty() -> {
                 binding.inputPhone.error = "Input phone number"
@@ -77,12 +81,12 @@ class CreateAccountActivity : AppCompatActivity() {
             else -> {
                 Toast.makeText(this,"Success",Toast.LENGTH_SHORT).show()
 
-                createAccount(firstname,lastname,businessName,phoneNumber,email,password)
+                createAccount(firstname,lastname,businessName,pin,phoneNumber,email,password)
             }
         }
     }
 
-    private fun createAccount(firstname : String,lastname: String,businessName : String,phone : String,email : String,password : String) {
+    private fun createAccount(firstname : String,lastname: String,businessName : String,pin : String,phone : String,email : String,password : String) {
         progressDialog.loading()
         firebaseAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener{
             if (it.isSuccessful) {
@@ -92,7 +96,7 @@ class CreateAccountActivity : AppCompatActivity() {
                     firstname,
                     lastname,
                     businessName,
-                    "000000",
+                    pin,
                     phone,
                     email)
 

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <ImageView
+        android:layout_width="match_parent"
+        android:id="@+id/cashierSelfieIn"
+        android:clickable="true"
+        android:scaleType="centerCrop"
+        android:background="@color/teal_700"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize10Percent"
+        android:layout_height="150dp"
+        android:focusable="true" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/retake"
+            android:id="@+id/buttonRetake"
+            style="@style/Widget.MaterialComponents.Button.TextButton"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/send"
+            android:id="@+id/buttonSend"
+            style="@style/Widget.MaterialComponents.Button.TextButton"/>
+    </LinearLayout>
+</LinearLayout>

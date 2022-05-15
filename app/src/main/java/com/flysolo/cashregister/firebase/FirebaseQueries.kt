@@ -87,20 +87,7 @@ class FirebaseQueries(val context: Context,val firebaseFirestore: FirebaseFirest
                     }
                 }
         }
-    //Cashier
-    fun createCashier(cashier: Cashier) {
-        firebaseFirestore.collection(User.TABLE_NAME).document(LoginActivity.uid)
-            .collection(Cashier.TABLE_NAME)
-            .document(cashier.cashierID!!)
-            .set(cashier)
-            .addOnCompleteListener {
-                if (it.isSuccessful) {
-                    Toast.makeText(context, "Cashier account created successful", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(context, "Failed!", Toast.LENGTH_SHORT).show()
-                }
-            }
-    }
+
      fun getCashiers(userID: String): FirestoreRecyclerOptions<Cashier?> {
         val query: Query = firebaseFirestore
             .collection(User.TABLE_NAME)

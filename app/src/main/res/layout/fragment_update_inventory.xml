@@ -107,7 +107,7 @@
                 android:id="@+id/inputQuantity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
+                android:inputType="number"
                 />
             <LinearLayout
                 android:layout_width="match_parent"
@@ -130,7 +130,7 @@
                         android:id="@+id/inputCost"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="text"
+                        android:inputType="number"
                         />
                 </LinearLayout>
                 <LinearLayout
@@ -148,7 +148,7 @@
                         android:id="@+id/inputPrice"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="text"
+                        android:inputType="number"
                         />
                 </LinearLayout>
 

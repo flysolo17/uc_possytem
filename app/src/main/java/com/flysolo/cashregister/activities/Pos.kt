@@ -1,16 +1,26 @@
 package com.flysolo.cashregister.activities
 
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.Intent
+import android.graphics.Bitmap
 import android.media.Image
+
+import android.media.ThumbnailUtils
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
-import android.view.Window
+
 import android.widget.*
-import androidx.cardview.widget.CardView
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -26,12 +36,19 @@ import com.flysolo.cashregister.firebase.FirebaseQueries
 import com.flysolo.cashregister.firebase.models.*
 import com.flysolo.cashregister.firebase.models.Transaction
 import com.flysolo.cashregister.fragments.ReceiptFragment
+import com.flysolo.cashregister.ml.ModelUnquant
 import com.flysolo.cashregister.viewmodels.ReceiptViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.card.MaterialCardView
 import com.google.firebase.firestore.FirebaseFirestore
+import com.squareup.picasso.Picasso
+import org.tensorflow.lite.DataType
+import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
 import org.w3c.dom.Text
+import java.io.IOException
 import java.lang.NumberFormatException
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 
 class Pos : AppCompatActivity() , ItemAdapter.OnItemIsClick, View.OnClickListener{
     private lateinit var binding : ActivityPosBinding
@@ -59,7 +76,15 @@ class Pos : AppCompatActivity() , ItemAdapter.OnItemIsClick, View.OnClickListene
     private var cashierName : String? = null
     private var store : String? = null
     private lateinit var receiptViewModel: ReceiptViewModel
+
+    private lateinit var cameraLauncher: ActivityResultLauncher<Intent>
+    private lateinit var list : List<String>
+    private var imageSize = 224
+    private var itemResultBitmap : Bitmap?  = null
     private fun _init(uid: String) {
+        val fileName="labels.txt"
+        val inputString= this.assets.open(fileName).bufferedReader().use { it.readText() }
+        list=inputString.split("\n")
         firestore = FirebaseFirestore.getInstance()
         dialog = BottomSheetDialog(this)
         itemList = mutableListOf()
@@ -116,9 +141,154 @@ class Pos : AppCompatActivity() , ItemAdapter.OnItemIsClick, View.OnClickListene
         binding.buttonPayNow.setOnClickListener {
             bottomSheetPayNow()
         }
+        binding.buttonScanBarcode.setOnClickListener {
+            underDevelopmentDialog()
+        }
 
+        cameraLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            var bitmap = result.data!!.extras!!.get("data") as Bitmap?
+            itemResultBitmap = bitmap
+            if (bitmap != null) {
+                val dimension: Int = Math.min(bitmap.getWidth(), bitmap.getHeight())
+                bitmap = ThumbnailUtils.extractThumbnail(bitmap, dimension, dimension)
+                bitmap = Bitmap.createScaledBitmap(bitmap, imageSize, imageSize, false)
+                classifyImage(bitmap)
+            }
+        }
 
+        binding.buttonDetectItem.setOnClickListener {
+            launchCamera(cameraLauncher)
+        }
     }
+    @SuppressLint("QueryPermissionsNeeded")
+    private fun launchCamera(launcher: ActivityResultLauncher<Intent>) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            if (intent.resolveActivity(packageManager) != null) {
+                launcher.launch(intent)
+            }
+
+        } else {
+            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            launcher.launch(intent)
+        }
+    }
+    private fun classifyImage(image: Bitmap){
+        try {
+            val model = ModelUnquant.newInstance(this)
+            // Creates inputs for reference.
+            val inputFeature0 =
+                TensorBuffer.createFixedSize(intArrayOf(1, 224, 224, 3), DataType.FLOAT32)
+            val byteBuffer: ByteBuffer = ByteBuffer.allocateDirect(4 * imageSize * imageSize * 3)
+            byteBuffer.order(ByteOrder.nativeOrder())
+
+            // get 1D array of 224 * 224 pixels in image
+            val intValues = IntArray(imageSize * imageSize)
+            image.getPixels(intValues, 0, image.width, 0, 0, image.width, image.height)
+
+            // iterate over pixels and extract R, G, and B values. Add to bytebuffer.
+            var pixel = 0
+            for (i in 0 until imageSize) {
+                for (j in 0 until imageSize) {
+                    val `val` = intValues[pixel++] // RGB
+                    byteBuffer.putFloat((`val` shr 16 and 0xFF) * (1f / 255f))
+                    byteBuffer.putFloat((`val` shr 8 and 0xFF) * (1f / 255f))
+                    byteBuffer.putFloat((`val` and 0xFF) * (1f / 255f))
+                }
+            }
+            inputFeature0.loadBuffer(byteBuffer)
+            // Runs model inference and gets result.
+            val outputs= model.process(inputFeature0)
+            val outputFeature0: TensorBuffer = outputs.outputFeature0AsTensorBuffer
+            val confidences = outputFeature0.floatArray
+
+            var maxPos = 0
+            var maxConfidence = 0f
+            for (i in confidences.indices) {
+                if (confidences[i] > maxConfidence ) {
+                    maxConfidence = confidences[i]
+                    maxPos = i
+
+                }
+            }
+            if (maxConfidence * 100 > 60f){
+                getScanResult(list[maxPos])
+
+            }else {
+                Toast.makeText(this,"Item too weak",Toast.LENGTH_SHORT).show()
+            }
+            model.close()
+        } catch (e: IOException) {
+            Log.d(".BarcodeModeFragment", e.message.toString())
+        }
+    }
+    private fun getScanResult(result: String) {
+       firestore.collection(User.TABLE_NAME)
+           .document(LoginActivity.uid)
+           .collection(Items.TABLE_NAME)
+           .document(result)
+           .get()
+           .addOnSuccessListener { document ->
+               if (document.exists()) {
+                   val items = document.toObject(Items::class.java)
+                   if (items!= null){
+                       showScannedItem(items)
+                   }
+               } else {
+                   Toast.makeText(this,"item not available in the inventory",Toast.LENGTH_SHORT).show()
+               }
+           }
+    }
+    private fun showScannedItem(items: Items) {
+        val dialog = Dialog(this)
+        dialog.setContentView(R.layout.dialog_show_item)
+        dialog.setTitle("Scanned Item")
+        val itemImage : ImageView = dialog.findViewById(R.id.itemImage)
+        val itemName : TextView = dialog.findViewById(R.id.textItemName)
+        val itemPrice : TextView = dialog.findViewById(R.id.textItemPrice)
+        val itemBarcode : TextView = dialog.findViewById(R.id.textItemBarcode)
+        val itemCategory : TextView = dialog.findViewById(R.id.textItemCategory)
+        if (items.itemImageURL!!.isNotEmpty()) {
+            Picasso.get().load(items.itemImageURL).placeholder(R.drawable.store).into(itemImage)
+        }
+        itemName.text = items.itemName
+        itemPrice.text = items.itemPrice.toString()
+        itemBarcode.text = items.itemBarcode
+        itemCategory.text = items.itemCategory
+        val textQuantity : TextView = dialog.findViewById(R.id.text_quantity)
+        val buttonIncrement : ImageView = dialog.findViewById(R.id.image_button_increment)
+        val buttonDecrement : ImageView = dialog.findViewById(R.id.image_button_decrement)
+        //button Actions
+        buttonIncrement.setOnClickListener {
+            textQuantity.text = incrementQuantity().toString()
+        }
+        buttonDecrement.setOnClickListener {
+            textQuantity.text = decrementQuantity().toString()
+        }
+        val buttonCancel : Button = dialog.findViewById(R.id.buttonCancel)
+        val buttonPurchase : Button = dialog.findViewById(R.id.buttonPurchase)
+        buttonCancel.setOnClickListener{
+            dialog.dismiss()
+        }
+        buttonPurchase.setOnClickListener {
+            val total = Integer.parseInt(textQuantity.text.toString()) * items.itemPrice!!
+            itemPurchasedList.add(ItemPurchased(items.itemBarcode,
+                items.itemName,
+                Integer.parseInt(textQuantity.text.toString()),
+                items.itemCost,
+                total,
+                false))
+            itemQuantity = 1
+            binding.textItemCounter.text = refreshItemCounter().toString()
+            binding.textSubTotal.text = refreshSubtotalTotalAmount().toString()
+            itemPurchasedAdapter.notifyDataSetChanged()
+            dialog.dismiss()
+        }
+        if (!dialog.isShowing) {
+            dialog.show()
+        }
+    }
+
     private fun bottomSheetPayNow(){
         button_20.setOnClickListener(this)
         button_50.setOnClickListener(this)
@@ -254,6 +424,7 @@ class Pos : AppCompatActivity() , ItemAdapter.OnItemIsClick, View.OnClickListene
             })
         callback.attachToRecyclerView(recyclerView)
     }
+
     //TODO: get total transaction cost
     private fun transactionCost(list : List<ItemPurchased>): Int {
         var purchaseCost = 0
@@ -262,7 +433,14 @@ class Pos : AppCompatActivity() , ItemAdapter.OnItemIsClick, View.OnClickListene
         }
         return purchaseCost
     }
-
+    private fun underDevelopmentDialog() {
+        val dialog = Dialog(this)
+        dialog.setContentView(R.layout.development_dialog)
+        dialog.setTitle("Under Development")
+        if (!dialog.isShowing) {
+            dialog.show()
+        }
+    }
 
     //TODO: count the items
     private fun refreshItemCounter(): Int {

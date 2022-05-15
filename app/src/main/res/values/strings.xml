@@ -142,4 +142,12 @@
     <string name="expenses">Expenses</string>
     <string name="receipt">Receipt</string>
     <string name="cash">Cash</string>
+    <string name="sorry_this_feature_is_under_development">Sorry, this feature is under development</string>
+    <string name="employee_name">Employee Name</string>
+    <string name="enter_name">Enter Name</string>
+    <string name="enter_4_digit_pin">Enter 4 digit Pin</string>
+    <string name="add_employee">Add employee</string>
+    <string name="logo_here">logo Here</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="retake">Retake</string>
 </resources>

@@ -160,7 +160,6 @@ class UpdateAccount : AppCompatActivity() {
                 if (it.isSuccessful){
                     Toast.makeText(this,"Success", Toast.LENGTH_SHORT).show()
                     progressDialog.stopLoading()
-                    startActivity(Intent(this,MainActivity::class.java))
                     finish()
                 } else {
                     Toast.makeText(this,"Failed",Toast.LENGTH_SHORT).show()
@@ -178,7 +177,5 @@ class UpdateAccount : AppCompatActivity() {
         binding.inputEmail.setText(user.userEmail)
         binding.inputPhone.setText(user.userPhoneNumber.toString())
         binding.inputStorePin.setText(user.userStorePin.toString())
-
     }
-
 }

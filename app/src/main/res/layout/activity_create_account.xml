@@ -79,7 +79,18 @@
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
-
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/inputPin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:errorEnabled="true">
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="@string/store_pin"
+            android:maxLength="6"
+            android:inputType="number"/>
+        </com.google.android.material.textfield.TextInputLayout>
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/inputPhone"
             android:layout_width="match_parent"

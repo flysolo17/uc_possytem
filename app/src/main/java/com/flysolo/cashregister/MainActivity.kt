@@ -17,6 +17,7 @@ import com.chaos.view.PinView
 import com.flysolo.cashregister.activities.*
 
 import com.flysolo.cashregister.databinding.ActivityMainBinding
+import com.flysolo.cashregister.firebase.QueryDates
 import com.flysolo.cashregister.firebase.models.Cashier
 
 import com.flysolo.cashregister.firebase.models.User
@@ -39,21 +40,24 @@ class MainActivity : AppCompatActivity() {
     private lateinit var pinLayout : View
     private lateinit var storePinView: PinView
     private var store : String? = null
+    private var uid : String ? = null
+    private val queryDates = QueryDates()
+    private lateinit var transactionList : MutableList<com.flysolo.cashregister.firebase.models.Transaction>
     private fun initViews(uid: String) {
         firestore = FirebaseFirestore.getInstance()
         fetchCurrentUser(uid)
         getALlCashier(uid)
         val cashierAdapter = ArrayAdapter(this,android.R.layout.simple_list_item_1,cashierNames)
+        transactionList = mutableListOf()
         binding.cashierSpinner.apply {
             adapter = cashierAdapter
             onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                     if (p2 != 0) {
                         showDialog(cashierList[p2-1],p2)
+                        binding.textCashierSales.text = getCashierTotalSales(cashierList[p2-1].cashierName!!).toString()
                     }
-
                 }
-
                 override fun onNothingSelected(p0: AdapterView<*>?) {
                     Toast.makeText(this@MainActivity,"Please Select cashier",Toast.LENGTH_SHORT).show()
                 }
@@ -96,15 +100,15 @@ class MainActivity : AppCompatActivity() {
                 inputPinCode.error = "Wrong Pin"
             }
         }
-
     }
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val uid = intent.getStringExtra(User.USER_ID)
+        uid = intent.getStringExtra(User.USER_ID)
         initViews(uid!!)
 
         binding.buttonInventory.setOnClickListener {
@@ -121,7 +125,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
         binding.buttonPOS.setOnClickListener {
-            posActivity(binding.cashierSpinner.selectedItem.toString(),uid)
+            posActivity(binding.cashierSpinner.selectedItem.toString(), uid!!)
         }
 
         binding.buttonTransaction.setOnClickListener {
@@ -139,8 +143,50 @@ class MainActivity : AppCompatActivity() {
                 adminDialog.show()
             }
         }
-    }
 
+        //attendance
+        binding.buttonAttendance.setOnClickListener {
+            startActivity(Intent(this,AttendanceActivity::class.java).putExtra(User.USER_ID,uid))
+        }
+
+        binding.buttonEmployee.setOnClickListener {
+            activity = CashierActivity()
+            if (!adminDialog.isShowing) {
+                adminDialog.setContentView(pinLayout)
+                adminDialog.show()
+            }
+        }
+    }
+    private fun getCashierTotalSales(cashierName: String) : Int {
+        var sales = 0
+        for(trans in transactionList) {
+            if (trans.transactionCashier.equals(cashierName)){
+                for (total in trans.transactionItems!!) {
+                    if (total.itemPurchasedIsRefunded == false) {
+                        sales += total.itemPurchasedPrice!!
+                    }
+                }
+            }
+        }
+        return sales
+    }
+    private fun getTransactionToday(uid: String){
+        transactionList.clear()
+        firestore.collection(User.TABLE_NAME)
+            .document(uid)
+            .collection(com.flysolo.cashregister.firebase.models.Transaction.TABLE_NAME)
+            .whereGreaterThan(com.flysolo.cashregister.firebase.models.Transaction.TIMESTAMP,queryDates.startOfDay(System.currentTimeMillis()))
+            .whereLessThan(com.flysolo.cashregister.firebase.models.Transaction.TIMESTAMP,queryDates.endOfDay(System.currentTimeMillis()))
+            .get()
+            .addOnCompleteListener {
+                if (it.isSuccessful){
+                    for (documents in it.result) {
+                        val transaction = documents.toObject(com.flysolo.cashregister.firebase.models.Transaction::class.java)
+                        transactionList.add(transaction)
+                    }
+                }
+            }
+    }
     private fun posActivity(cashierName: String,uid: String) {
         if (cashierName.isEmpty() || cashierName == defaultCashier){
             Toast.makeText(this,"No cashier",Toast.LENGTH_SHORT).show()
@@ -189,6 +235,7 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         window?.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+        getTransactionToday(LoginActivity.uid)
     }
 
     private val storePinWatcher: TextWatcher = object : TextWatcher {
@@ -201,7 +248,7 @@ class MainActivity : AppCompatActivity() {
                         if (activity != null) {
                             storePinView.editableText.clear()
                             adminDialog.dismiss()
-                            adminActivities(activity!!)
+                            adminActivities(activity!!, uid!!)
                         }
                     } else {
                         storePinView.editableText.clear()
@@ -218,8 +265,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-    private fun adminActivities(activity: Activity) {
-        startActivity(Intent(this@MainActivity, activity::class.java))
+    private fun adminActivities(activity: Activity,uid: String) {
+        startActivity(Intent(this@MainActivity, activity::class.java).putExtra(User.USER_ID,uid))
     }
 
 

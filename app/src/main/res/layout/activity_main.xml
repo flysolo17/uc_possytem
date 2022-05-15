@@ -52,7 +52,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Php 2,000"
+                android:id="@+id/textCashierSales"
+                android:text="@string/_0"
                 android:textSize="24sp"
                 android:textColor="@color/black"
                 android:fontFamily="@font/poppins_semibold"/>
@@ -154,6 +155,7 @@
                         android:background="@color/white"/>
                     <TextView
                         android:gravity="center"
+                        android:fontFamily="@font/poppins_medium"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Inventory"/>
@@ -177,6 +179,7 @@
                         android:gravity="center"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_medium"
                         android:text="POS"/>
                 </LinearLayout>
                 <LinearLayout
@@ -198,6 +201,7 @@
                         android:gravity="center"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_medium"
                         android:text="@string/cash_drawer"/>
                 </LinearLayout>
             </LinearLayout>
@@ -219,6 +223,7 @@
                     android:layout_weight="1"
                     android:clickable="true"
                     android:focusable="true"
+                    android:id="@+id/buttonAttendance"
                     android:orientation="vertical">
                     <ImageView
                         android:layout_width="36dp"
@@ -231,6 +236,7 @@
                         android:gravity="center"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_medium"
                         android:text="Attendance"/>
                 </LinearLayout>
                 <LinearLayout
@@ -238,6 +244,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:clickable="true"
+                    android:id="@+id/buttonEmployee"
                     android:focusable="true"
                     android:orientation="vertical">
                     <ImageView
@@ -251,7 +258,8 @@
                         android:gravity="center"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Cashiers"/>
+                        android:fontFamily="@font/poppins_medium"
+                        android:text="@string/employee"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -270,6 +278,7 @@
                         android:background="@color/white"/>
                     <TextView
                         android:gravity="center"
+                        android:fontFamily="@font/poppins_medium"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/transactions"/>

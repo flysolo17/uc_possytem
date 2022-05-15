@@ -4,26 +4,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#D0DFFF"
     android:orientation="vertical"
-    tools:context=".activities.Inventory">
+    android:background="#D0DFFF"
+    tools:context=".activities.AttendanceActivity">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
         android:gravity="center_vertical"
         android:orientation="horizontal">
         <ImageButton
-
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_margin="10dp"
             android:id="@+id/buttonBack"
+
             android:background="@drawable/ic_arrow___left"
             android:contentDescription="@string/back" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/inventory"
+            android:text="@string/attendance"
             android:fontFamily="@font/poppins_medium"
             android:textSize="16sp"
             android:textColor="@color/black"/>
@@ -35,18 +35,17 @@
         android:padding="10dp"
         android:orientation="vertical"
         android:background="@drawable/cards2">
-
-            <ImageButton
-                android:id="@+id/buttonAddInventory"
-                android:layout_gravity="end"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_margin="10dp"
-                android:background="@drawable/ic_add"/>
-
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:layout_marginTop="10dp"
+            android:id="@+id/cashierSpinner"
+            android:textColor="@color/black"
+            android:fontFamily="@font/poppins_semibold"/>
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/recyclerviewItems"/>
+            android:id="@+id/recyclerviewAttendance"/>
     </LinearLayout>
 </LinearLayout>

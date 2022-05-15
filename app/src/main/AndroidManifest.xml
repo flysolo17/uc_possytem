@@ -26,6 +26,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CashRegister">
         <activity
+            android:name=".activities.AttendanceActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.CashierActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.CashDrawerActivity"
             android:exported="false" />
         <activity
