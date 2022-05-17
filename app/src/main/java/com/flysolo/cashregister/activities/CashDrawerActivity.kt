@@ -32,6 +32,7 @@ class CashDrawerActivity : AppCompatActivity() {
     private var today: Long = 0
     private var startingCash = 0
     private var cashAdded = 0
+    private var  sales = 0
     private fun init() {
         firestore = FirebaseFirestore.getInstance()
         dialog = BottomSheetDialog(this)
@@ -117,12 +118,20 @@ class CashDrawerActivity : AppCompatActivity() {
                 queryDates.endOfDay(date)
             )
         query.get()
+
           .addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 if (task.result != null) {
                     for (document in task.result) {
                         val transactions = document.toObject(Transaction::class.java)
                         transactionList.add(transactions)
+
+                        sales = if (transactionList.size != 0) {
+                            computeTotalSales(transactionList)
+                        } else {
+                            0
+                        }
+                        binding.textCashSales.text = sales.toString()
                     }
                 }
             }
@@ -207,6 +216,7 @@ class CashDrawerActivity : AppCompatActivity() {
                 if (it.isSuccessful) {
                     dialog.dismiss()
                     Toast.makeText(this,"Success",Toast.LENGTH_SHORT).show()
+                    getAllTransactionsToday(today)
                     getCashDrawerToday(today)
                 }
             }
