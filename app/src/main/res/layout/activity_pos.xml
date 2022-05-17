@@ -142,12 +142,6 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_margin="10dp"
-                android:id="@+id/buttonScanBarcode"
-                android:background="@drawable/ic_scan"/>
-            <ImageButton
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_margin="10dp"
                 android:id="@+id/buttonDetectItem"
                 android:background="@drawable/ic_camera"/>
 

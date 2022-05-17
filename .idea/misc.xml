@@ -18,7 +18,7 @@
         <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/activity_create_account.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/activity_inventory.xml" value="0.12268518518518519" />
         <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/activity_login.xml" value="0.25416666666666665" />
-        <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/activity_main.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/activity_main.xml" value="0.4" />
         <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/activity_my_store.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/activity_pos.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/activity_splash_screen.xml" value="0.25416666666666665" />
@@ -27,6 +27,7 @@
         <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/bottom_sheet_add_employee.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/bottom_sheet_pay.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/bottomsheet_show_items.xml" value="0.3819444444444444" />
+        <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/continues_scan.xml" value="0.2116788321167883" />
         <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/development_dialog.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/dialog_admin_pincode.xml" value="0.3819444444444444" />
         <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/dialog_attendance.xml" value="0.25416666666666665" />

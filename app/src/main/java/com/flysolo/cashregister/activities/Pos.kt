@@ -4,51 +4,53 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Intent
 import android.graphics.Bitmap
-import android.media.Image
-
+import android.graphics.Color
 import android.media.ThumbnailUtils
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
-
 import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.flysolo.cashregister.MainActivity
 import com.flysolo.cashregister.R
-import com.flysolo.cashregister.databinding.ActivityPosBinding
-import com.flysolo.cashregister.login.LoginActivity
 import com.flysolo.cashregister.adapter.ItemAdapter
 import com.flysolo.cashregister.adapter.ItemPurchasedAdapter
+import com.flysolo.cashregister.databinding.ActivityPosBinding
 import com.flysolo.cashregister.firebase.FirebaseQueries
 import com.flysolo.cashregister.firebase.models.*
-import com.flysolo.cashregister.firebase.models.Transaction
 import com.flysolo.cashregister.fragments.ReceiptFragment
+import com.flysolo.cashregister.login.LoginActivity
 import com.flysolo.cashregister.ml.ModelUnquant
 import com.flysolo.cashregister.viewmodels.ReceiptViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.card.MaterialCardView
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.ResultPoint
+import com.google.zxing.client.android.BeepManager
+import com.journeyapps.barcodescanner.BarcodeCallback
+import com.journeyapps.barcodescanner.BarcodeResult
+import com.journeyapps.barcodescanner.DecoratedBarcodeView
+import com.journeyapps.barcodescanner.DefaultDecoderFactory
 import com.squareup.picasso.Picasso
 import org.tensorflow.lite.DataType
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
-import org.w3c.dom.Text
 import java.io.IOException
-import java.lang.NumberFormatException
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+import java.util.*
+
 
 class Pos : AppCompatActivity() , ItemAdapter.OnItemIsClick, View.OnClickListener{
     private lateinit var binding : ActivityPosBinding
@@ -81,6 +83,9 @@ class Pos : AppCompatActivity() , ItemAdapter.OnItemIsClick, View.OnClickListene
     private lateinit var list : List<String>
     private var imageSize = 224
     private var itemResultBitmap : Bitmap?  = null
+
+
+
     private fun _init(uid: String) {
         val fileName="labels.txt"
         val inputString= this.assets.open(fileName).bufferedReader().use { it.readText() }
@@ -121,6 +126,8 @@ class Pos : AppCompatActivity() , ItemAdapter.OnItemIsClick, View.OnClickListene
 
         receiptViewModel = ViewModelProvider(this).get(ReceiptViewModel::class.java)
 
+
+
     }
     
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -141,18 +148,17 @@ class Pos : AppCompatActivity() , ItemAdapter.OnItemIsClick, View.OnClickListene
         binding.buttonPayNow.setOnClickListener {
             bottomSheetPayNow()
         }
-        binding.buttonScanBarcode.setOnClickListener {
-            underDevelopmentDialog()
-        }
 
         cameraLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-            var bitmap = result.data!!.extras!!.get("data") as Bitmap?
-            itemResultBitmap = bitmap
-            if (bitmap != null) {
-                val dimension: Int = Math.min(bitmap.getWidth(), bitmap.getHeight())
-                bitmap = ThumbnailUtils.extractThumbnail(bitmap, dimension, dimension)
-                bitmap = Bitmap.createScaledBitmap(bitmap, imageSize, imageSize, false)
-                classifyImage(bitmap)
+            if (result.data != null) {
+                var bitmap = result.data!!.extras!!.get("data") as Bitmap?
+                itemResultBitmap = bitmap
+                if (bitmap != null) {
+                    val dimension: Int = Math.min(bitmap.getWidth(), bitmap.getHeight())
+                    bitmap = ThumbnailUtils.extractThumbnail(bitmap, dimension, dimension)
+                    bitmap = Bitmap.createScaledBitmap(bitmap, imageSize, imageSize, false)
+                    classifyImage(bitmap)
+                }
             }
         }
 
@@ -301,7 +307,7 @@ class Pos : AppCompatActivity() , ItemAdapter.OnItemIsClick, View.OnClickListene
         binding.textSubTotal.addTextChangedListener(paymentTextWatcher)
         text_cash_recieved.addTextChangedListener(paymentTextWatcher)
         button_pay_now.setOnClickListener {
-            val transaction = Transaction(firebaseQueries.generateID(Transaction.TABLE_NAME),
+            val transaction = Transaction(firebaseQueries.generateID("Transaction"),
                 cashierName,
                 System.currentTimeMillis(),
                 itemPurchasedList)

@@ -4,13 +4,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="bottom"
+    android:orientation="vertical"
+    android:gravity="center"
     tools:context=".SplashScreen">
-    <TextView
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Name of your group"
-        android:padding="10dp"
-        android:gravity="center"
-        android:textSize="18sp"/>
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_gravity="center"
+            android:src="@drawable/logo"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="bottom"
+            android:fontFamily="@font/poppins_semibold"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:text="Cash Register"/>
+    </FrameLayout>
+
 </LinearLayout>

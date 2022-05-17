@@ -10,7 +10,6 @@ class Transaction(
         const val RECEIPT_ID = "transactionID"
         const val TIMESTAMP = "transactionTimestamp"
         const val TRANSACTION_ITEMS = "transactionItems"
-
         const val REFUND = "transactionTotalRefunds"
     }
 }
