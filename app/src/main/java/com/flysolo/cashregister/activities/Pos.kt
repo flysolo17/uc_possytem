@@ -221,7 +221,7 @@ class Pos : AppCompatActivity() , ItemAdapter.OnItemIsClick, View.OnClickListene
                 getScanResult(list[maxPos])
 
             }else {
-                Toast.makeText(this,"Item too weak",Toast.LENGTH_SHORT).show()
+                Toast.makeText(this,"Item not available",Toast.LENGTH_SHORT).show()
             }
             model.close()
         } catch (e: IOException) {

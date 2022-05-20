@@ -68,13 +68,6 @@
                         android:layout_margin="10dp"
                         android:background="@drawable/ic_image"
                         android:contentDescription="@string/gallery" />
-                    <ImageButton
-                        android:id="@+id/buttonCamera"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:layout_margin="10dp"
-                        android:background="@drawable/ic_camera"
-                        android:contentDescription="@string/camera" />
                 </LinearLayout>
             </LinearLayout>
 
