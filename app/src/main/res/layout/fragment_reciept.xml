@@ -20,6 +20,14 @@
             android:textColor="@color/black"
             android:textSize="18sp"
             android:fontFamily="@font/poppins_semibold" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="District 4 cuyapo Neuva Ecija"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:fontFamily="@font/poppins_medium" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

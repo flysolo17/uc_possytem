@@ -130,7 +130,7 @@
                         android:id="@+id/inputCost"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="number"
+                        android:inputType="numberDecimal"
                         />
                 </LinearLayout>
                 <LinearLayout
@@ -148,7 +148,7 @@
                         android:id="@+id/inputPrice"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="number"
+                        android:inputType="numberDecimal"
                         />
                 </LinearLayout>
 

@@ -32,7 +32,7 @@ class CashDrawerActivity : AppCompatActivity() {
     private var today: Long = 0
     private var startingCash = 0
     private var cashAdded = 0
-    private var  sales = 0
+    private var  sales = 0.0
     private fun init() {
         firestore = FirebaseFirestore.getInstance()
         dialog = BottomSheetDialog(this)
@@ -129,7 +129,7 @@ class CashDrawerActivity : AppCompatActivity() {
                         sales = if (transactionList.size != 0) {
                             computeTotalSales(transactionList)
                         } else {
-                            0
+                            0.0
                         }
                         binding.textCashSales.text = sales.toString()
                     }
@@ -142,12 +142,12 @@ class CashDrawerActivity : AppCompatActivity() {
         binding.textStartingCash.text = startingCash.toString()
         binding.textCashAdded.text = cashAdded.toString()
         binding.textCashSales.text = computeTotalSales(transactions).toString()
-        val total : Int = (startingCash + cashAdded) + computeTotalSales(transactions)
+        val total : Double = (startingCash + cashAdded) + computeTotalSales(transactions)
         binding.textTotal.text = total.toString()
     }
 
-    private fun computeTotalSales(transactions: List<Transaction>): Int {
-        var total = 0
+    private fun computeTotalSales(transactions: List<Transaction>): Double {
+        var total = 0.0
         for (items in transactions) {
             for (totalSales in items.transactionItems!!)
                 if (totalSales.itemPurchasedIsRefunded != true) {

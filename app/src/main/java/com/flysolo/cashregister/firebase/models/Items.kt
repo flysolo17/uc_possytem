@@ -6,8 +6,8 @@ data class Items(val itemBarcode: String? = null,
                  val itemName : String ? = null,
                  val itemCategory: String ? = null,
                  var itemQuantity: Int ? = null,
-                 val itemCost : Int? = null,
-                 val itemPrice : Int? = null,
+                 val itemCost : Double? = 0.00,
+                 val itemPrice : Double? = 0.00,
                  val timestamp: Long? = null){
 
     companion object {

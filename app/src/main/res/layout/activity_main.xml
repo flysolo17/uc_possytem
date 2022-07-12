@@ -52,24 +52,54 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <TextView
+            android:orientation="horizontal">
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:id="@+id/textCashierSales"
-                android:text="@string/_0"
-                android:textSize="24sp"
-                android:textColor="@color/black"
-                android:fontFamily="@font/poppins_semibold"/>
-            <TextView
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:id="@+id/textCostOfGoods"
+                    android:text="@string/_0"
+                    android:textSize="18sp"
+                    android:textColor="@color/black"
+                    android:fontFamily="@font/poppins_semibold"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Cost of Goods"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/poppins_medium"/>
+            </LinearLayout>
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/cash_sales_today"
-                android:textSize="16sp"
-                android:fontFamily="@font/poppins_medium"/>
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:id="@+id/textCashierSales"
+                    android:text="@string/_0"
+                    android:textSize="18sp"
+                    android:textColor="@color/black"
+                    android:fontFamily="@font/poppins_semibold"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/cash_sales_today"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/poppins_medium"/>
+            </LinearLayout>
+
         </LinearLayout>
+
 
     </LinearLayout>
 

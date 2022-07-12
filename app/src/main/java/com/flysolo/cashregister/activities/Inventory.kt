@@ -1,35 +1,40 @@
 package com.flysolo.cashregister.activities
 
-import android.content.Intent
+import android.app.Dialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.view.View
 import android.widget.Toast
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.chaos.view.PinView
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.flysolo.cashregister.MainActivity
 import com.flysolo.cashregister.R
 import com.flysolo.cashregister.adapter.InventoryAdapter
 import com.flysolo.cashregister.databinding.ActivityInventoryBinding
-import com.flysolo.cashregister.firebase.FirebaseQueries
 import com.flysolo.cashregister.firebase.models.Items
 import com.flysolo.cashregister.firebase.models.User
 import com.flysolo.cashregister.fragments.AddInventory
 import com.flysolo.cashregister.fragments.UpdateInventory
-import com.flysolo.cashregister.login.LoginActivity
+import com.flysolo.cashregister.login.LoginActivity.Companion.uid
 import com.flysolo.cashregister.mystore.bottomnav.inventory.viewmodel.InventoryViewModel
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import java.lang.NumberFormatException
 
 class Inventory : AppCompatActivity(),InventoryAdapter.ItemClick {
     private lateinit var binding : ActivityInventoryBinding
     private lateinit var inventoryAdapter: InventoryAdapter
     private lateinit var firestore: FirebaseFirestore
     private lateinit var inventoryViewModel: InventoryViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityInventoryBinding.inflate(layoutInflater)
@@ -81,14 +86,15 @@ class Inventory : AppCompatActivity(),InventoryAdapter.ItemClick {
             }
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.bindingAdapterPosition
-                deleteItem(inventoryAdapter.snapshots[position].itemBarcode!!)
+                showAdminDialog(position,1)
             }
         })
         callback.attachToRecyclerView(recyclerView)
     }
+
     fun deleteItem(id: String) {
         firestore.collection(User.TABLE_NAME)
-            .document(LoginActivity.uid)
+            .document(uid)
             .collection(Items.TABLE_NAME)
             .document(id).delete().addOnCompleteListener { task: Task<Void?> ->
                 if (task.isSuccessful) {
@@ -101,11 +107,54 @@ class Inventory : AppCompatActivity(),InventoryAdapter.ItemClick {
     }
 
     override fun onItemClick(position: Int) {
+
+        showAdminDialog(position,0)
+    }
+
+    private fun showAdminDialog(position: Int,type : Int) {
+        val view: View = layoutInflater.inflate(R.layout.dialog_admin_pincode, binding.root, false)
+        val pinView: PinView = view.findViewById(R.id.storePin)
+        val dialog = Dialog(this)
+        dialog.setContentView(view)
+        pinView.addTextChangedListener { text: Editable? ->
+            if (text.toString().length == 6) {
+                if (text.toString() == MainActivity.user!!.userStorePin) {
+                    when (type) {
+                        0 -> {
+                            showUpdateInventory(position)
+                            dialog.dismiss()
+                        }
+                        1 -> {
+                            deleteItem(inventoryAdapter.snapshots[position].itemBarcode!!)
+                            dialog.dismiss()
+                        }
+                        else -> {
+                            Toast.makeText(binding.root.context, "Invalid ", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                    }
+
+                } else {
+                    text?.clear()
+                    Toast.makeText(
+                        this@Inventory,
+                        "Invalid Pin",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+            }
+        }
+
+        dialog.show()
+
+    }
+
+    private fun showUpdateInventory(position : Int) {
         inventoryViewModel.setItem(inventoryAdapter.snapshots[position])
         val updateInventory = UpdateInventory()
         if (!updateInventory.isAdded) {
             updateInventory.show(supportFragmentManager,"update item")
         }
     }
-
 }

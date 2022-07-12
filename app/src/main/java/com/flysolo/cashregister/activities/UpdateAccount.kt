@@ -63,14 +63,14 @@ class UpdateAccount : AppCompatActivity() {
         galleryLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
                 val data = result.data
-                try {
-                    if (data?.data != null) {
-                        imageURI = data.data
-                        binding.imageAddStoreImage.setImageURI(imageURI)
+                    try {
+                        if (data?.data != null) {
+                            imageURI = data.data
+                            binding.imageAddStoreImage.setImageURI(imageURI)
+                        }
+                    } catch (e: IOException) {
+                        e.printStackTrace()
                     }
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
             }
         binding.buttonBack.setOnClickListener {
             finish()

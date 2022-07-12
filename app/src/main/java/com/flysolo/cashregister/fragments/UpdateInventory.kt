@@ -171,8 +171,8 @@ class UpdateInventory : DialogFragment() {
                             itemName,
                             itemCategory,
                             Integer.parseInt(itemQuantity),
-                            Integer.parseInt(itemCost),
-                            Integer.parseInt(itemPrice),
+                            itemCost.toDouble(),
+                            itemPrice.toDouble(),
                             System.currentTimeMillis())
                         updateItem(items)
                     } else {
@@ -267,8 +267,8 @@ class UpdateInventory : DialogFragment() {
                         itemName,
                         itemCategory,
                         itemQuantity,
-                        itemCost,
-                        itemPrice,
+                        itemCost.toDouble(),
+                        itemPrice.toDouble(),
                         System.currentTimeMillis())
                     progressDialog.stopLoading()
                     updateItem(items)

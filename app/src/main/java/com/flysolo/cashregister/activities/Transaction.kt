@@ -20,6 +20,7 @@ import com.flysolo.cashregister.login.LoginActivity
 import com.flysolo.cashregister.mystore.bottomnav.storehome.viewmodels.TransactionViewModel
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.firebase.firestore.FirebaseFirestore
+import java.text.DecimalFormat
 import java.text.Format
 import java.text.SimpleDateFormat
 import java.util.*
@@ -34,6 +35,7 @@ class Transaction : AppCompatActivity() ,TransactionAdapter.OnTransactionClick {
     private lateinit var transactionAdapter: TransactionAdapter
     private lateinit var firebaseQueries: FirebaseQueries
     private lateinit var transactionViewModel: TransactionViewModel
+    val decimalFormat = DecimalFormat("#.##")
     private fun init() {
         transactionViewModel = ViewModelProvider(this).get(TransactionViewModel::class.java)
         transactionList = mutableListOf()
@@ -82,12 +84,12 @@ class Transaction : AppCompatActivity() ,TransactionAdapter.OnTransactionClick {
             if (task.isComplete) {
                 if (task.result != null) {
                     if (task.result.isEmpty) {
-                        binding.textTotalSales.text =0.toString()
+                        binding.textTotalSales.text = decimalFormat.format(0)
                         binding.textTotalTransaction.text = 0.toString()
                         binding.textItemSold.text = 0.toString()
-                        binding.textCostOfGoods.text = 0.toString()
-                        binding.textProfit.text = 0.toString()
-                        binding.textTotalRefunds.text = 0.toString()
+                        binding.textCostOfGoods.text =decimalFormat.format(0)
+                        binding.textProfit.text =decimalFormat.format(0)
+                        binding.textTotalRefunds.text = decimalFormat.format(0)
                     }
                 }
             }
@@ -95,12 +97,12 @@ class Transaction : AppCompatActivity() ,TransactionAdapter.OnTransactionClick {
                 for (document in task.result) {
                     val transactions = document.toObject(Transaction::class.java)
                     transactionList.add(transactions)
-                    binding.textTotalSales.text = computeTotalSales(transactionList).toString()
+                    binding.textTotalSales.text = decimalFormat.format(computeTotalSales(transactionList))
                     binding.textTotalTransaction.text = transactionList.size.toString()
                     binding.textItemSold.text = getTotalItemSold(transactionList).toString()
-                    binding.textCostOfGoods.text = computeCostOfGoods(transactionList).toString()
-                    binding.textProfit.text = (computeTotalSales(transactionList) - computeCostOfGoods(transactionList)).toString()
-                    binding.textTotalRefunds.text = computeTotalRefunds(transactionList).toString()
+                    binding.textCostOfGoods.text = decimalFormat.format(computeCostOfGoods(transactionList))
+                    binding.textProfit.text = decimalFormat.format(computeTotalSales(transactionList) - computeCostOfGoods(transactionList))
+                    binding.textTotalRefunds.text = decimalFormat.format(computeTotalRefunds(transactionList))
                 }
             }
         }
@@ -113,8 +115,8 @@ class Transaction : AppCompatActivity() ,TransactionAdapter.OnTransactionClick {
         return itemCount
     }
 
-    private fun computeTotalSales(transactions : List<Transaction>): Int {
-        var total = 0
+    private fun computeTotalSales(transactions : List<Transaction>): Double {
+        var total = 0.0
         for (items in transactions) {
             for (totalSales in items.transactionItems!!)
                 if (totalSales.itemPurchasedIsRefunded != true){
@@ -123,8 +125,8 @@ class Transaction : AppCompatActivity() ,TransactionAdapter.OnTransactionClick {
         }
         return total
     }
-    private fun computeCostOfGoods(transactions : List<Transaction>): Int {
-        var cost = 0
+    private fun computeCostOfGoods(transactions : List<Transaction>): Double {
+        var cost = 0.0
         for (purchaseCost in transactions) {
             for (totalCost in purchaseCost.transactionItems!!){
                 cost += totalCost.itemPurchasedCost!!
@@ -133,8 +135,8 @@ class Transaction : AppCompatActivity() ,TransactionAdapter.OnTransactionClick {
         return cost
     }
     //TODO: get total transaction refunds
-    private fun computeTotalRefunds(list : List<Transaction>): Int {
-        var totalRefund = 0
+    private fun computeTotalRefunds(list : List<Transaction>): Double {
+        var totalRefund = 0.0
         for (refund in list) {
             for (purchases in refund.transactionItems!!){
                 if (purchases.itemPurchasedIsRefunded == true){

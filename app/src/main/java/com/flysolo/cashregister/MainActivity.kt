@@ -27,12 +27,15 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.picasso.Picasso
 import java.lang.NumberFormatException
+import java.text.DecimalFormat
 
 const val defaultCashier = "No cashier"
+
+val decimalFormat = DecimalFormat("#.##")
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var firestore: FirebaseFirestore
-    private var user : User? = null
+
     private var cashierList = mutableListOf<Cashier>()
     private var cashierNames = mutableListOf(defaultCashier)
     private var activity : Activity? = null
@@ -55,7 +58,8 @@ class MainActivity : AppCompatActivity() {
                 override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                     if (p2 != 0) {
                         showDialog(cashierList[p2-1],p2)
-                        binding.textCashierSales.text = getCashierTotalSales(cashierList[p2-1].cashierName!!).toString()
+                        binding.textCashierSales.text = decimalFormat.format(getCashierTotalSales(cashierList[p2-1].cashierName!!))
+                        binding.textCostOfGoods.text = decimalFormat.format(getCashierCostOfGoods(cashierList[p2-1].cashierName!!))
                     }
                 }
                 override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -157,14 +161,26 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-    private fun getCashierTotalSales(cashierName: String) : Int {
-        var sales = 0
+    private fun getCashierTotalSales(cashierName: String) : Double {
+        var sales = 0.0
+
         for(trans in transactionList) {
             if (trans.transactionCashier.equals(cashierName)){
                 for (total in trans.transactionItems!!) {
                     if (total.itemPurchasedIsRefunded == false) {
                         sales += total.itemPurchasedPrice!!
                     }
+                }
+            }
+        }
+        return sales
+    }
+    private fun getCashierCostOfGoods(cashierName: String) : Double {
+        var sales = 0.00
+        for(trans in transactionList) {
+            if (trans.transactionCashier.equals(cashierName)){
+                trans.transactionItems?.map { transition ->
+                    sales += transition.itemPurchasedCost!!
                 }
             }
         }
@@ -177,16 +193,19 @@ class MainActivity : AppCompatActivity() {
             .collection(com.flysolo.cashregister.firebase.models.Transaction.TABLE_NAME)
             .whereGreaterThan(com.flysolo.cashregister.firebase.models.Transaction.TIMESTAMP,queryDates.startOfDay(System.currentTimeMillis()))
             .whereLessThan(com.flysolo.cashregister.firebase.models.Transaction.TIMESTAMP,queryDates.endOfDay(System.currentTimeMillis()))
-            .get()
-            .addOnCompleteListener {
-                if (it.isSuccessful){
-                    for (documents in it.result) {
+            .addSnapshotListener { value, error ->
+                if (error != null) {
+                    error.printStackTrace()
+                } else {
+                    value?.map { documents ->
                         val transaction = documents.toObject(com.flysolo.cashregister.firebase.models.Transaction::class.java)
                         transactionList.add(transaction)
                     }
                 }
             }
     }
+
+
     private fun posActivity(cashierName: String,uid: String) {
         if (cashierName.isEmpty() || cashierName == defaultCashier){
             Toast.makeText(this,"No cashier",Toast.LENGTH_SHORT).show()
@@ -203,7 +222,7 @@ class MainActivity : AppCompatActivity() {
                 .addOnSuccessListener {
                     if (it.exists()){
                         val user = it.toObject(User::class.java)
-                        this.user = user
+                        MainActivity.user = user
                         store = user?.userBusinessName
                         if (user?.userProfile!!.isNotEmpty()){
                             Picasso.get().load(user.userProfile).placeholder(R.drawable.store).into(binding.imageAddStoreImage)
@@ -272,6 +291,7 @@ class MainActivity : AppCompatActivity() {
 
 
     companion object {
+        var user : User? = null
         fun setTranslucentStatusBar(activity : Activity) {
             activity.window?.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
             activity.window?.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)

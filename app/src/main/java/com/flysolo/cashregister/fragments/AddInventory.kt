@@ -180,8 +180,8 @@ class AddInventory : DialogFragment() {
                                     itemName,
                                     itemCategory,
                                     Integer.parseInt(itemQuantity),
-                                    Integer.parseInt(itemCost),
-                                    Integer.parseInt(itemPrice),
+                                    itemCost.toDouble(),
+                                    itemPrice.toDouble(),
                                     System.currentTimeMillis())
                                 firebaseQueries?.addItem(items)
                                 progressDialog.stopLoading()

@@ -66,6 +66,7 @@
                 android:id="@+id/inputEmployeePin"
                 android:layout_width="match_parent"
                 android:maxLength="4"
+                android:text="@string/_0000"
                 android:layout_height="wrap_content"
                 android:hint="@string/enter_4_digit_pin"
                 android:inputType="number"

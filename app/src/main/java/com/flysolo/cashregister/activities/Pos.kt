@@ -49,6 +49,7 @@ import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
 import java.io.IOException
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+import java.text.DecimalFormat
 import java.util.*
 
 
@@ -84,7 +85,7 @@ class Pos : AppCompatActivity() , ItemAdapter.OnItemIsClick, View.OnClickListene
     private var imageSize = 224
     private var itemResultBitmap : Bitmap?  = null
 
-
+    val decimalFormat = DecimalFormat("#.##")
 
     private fun _init(uid: String) {
         val fileName="labels.txt"
@@ -432,21 +433,14 @@ class Pos : AppCompatActivity() , ItemAdapter.OnItemIsClick, View.OnClickListene
     }
 
     //TODO: get total transaction cost
-    private fun transactionCost(list : List<ItemPurchased>): Int {
-        var purchaseCost = 0
+    private fun transactionCost(list : List<ItemPurchased>): Double {
+        var purchaseCost  = 0.0
         for (cost in list) {
             purchaseCost += cost.itemPurchasedCost!!
         }
         return purchaseCost
     }
-    private fun underDevelopmentDialog() {
-        val dialog = Dialog(this)
-        dialog.setContentView(R.layout.development_dialog)
-        dialog.setTitle("Under Development")
-        if (!dialog.isShowing) {
-            dialog.show()
-        }
-    }
+
 
     //TODO: count the items
     private fun refreshItemCounter(): Int {
@@ -459,8 +453,8 @@ class Pos : AppCompatActivity() , ItemAdapter.OnItemIsClick, View.OnClickListene
         return counter
     }
     //TODO: refresh the total amount of the order
-    private fun refreshSubtotalTotalAmount(): Int {
-        var purchasesSubtotal = 0
+    private fun refreshSubtotalTotalAmount(): Double {
+        var purchasesSubtotal = 0.0
         if (itemPurchasedList.isNotEmpty()) {
             for (i in itemPurchasedList.indices) {
                 purchasesSubtotal += itemPurchasedList[i].itemPurchasedPrice!!
@@ -510,12 +504,13 @@ class Pos : AppCompatActivity() , ItemAdapter.OnItemIsClick, View.OnClickListene
     private val paymentTextWatcher: TextWatcher = object : TextWatcher {
         override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-            val subtotal: Int = binding.textSubTotal.text.toString().toInt()
-            val cashReceived: Int = text_cash_recieved.text.toString().toInt()
+            val subtotal: Double = binding.textSubTotal.text.toString().toDouble()
+            val cashReceived: Double = text_cash_recieved.text.toString().toDouble()
             if (cashReceived > subtotal) {
                 val total = cashReceived - subtotal
-                text_cash_change.text = total.toString()
-            } else text_cash_change.text = 0.toString()
+
+                text_cash_change.text = decimalFormat.format(total)
+            } else text_cash_change.text = decimalFormat.format(0)
         }
 
         override fun afterTextChanged(s: Editable) {}
@@ -528,7 +523,7 @@ class Pos : AppCompatActivity() , ItemAdapter.OnItemIsClick, View.OnClickListene
             try {
                 if (s.toString().isNotEmpty()) {
                     text_cash_recieved.text = s.toString()
-                    val cash = s.toString().toInt()
+                    val cash = s.toString().toDouble()
                     if (cash > 100000) {
                         s.replace(0, s.length, "0")
                     }

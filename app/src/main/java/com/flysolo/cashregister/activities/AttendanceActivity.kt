@@ -81,7 +81,6 @@ class AttendanceActivity : AppCompatActivity(),AttendanceAdapter.SelfieOutIsClic
                     Toast.makeText(this@AttendanceActivity,"Please Select cashier", Toast.LENGTH_SHORT).show()
                 }
             }
-
         }
         cameraLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             if (result.data != null) {
@@ -184,9 +183,9 @@ class AttendanceActivity : AppCompatActivity(),AttendanceAdapter.SelfieOutIsClic
                 }
                 else -> {
                     val fileReference = storage!!.child(
-                        System.currentTimeMillis().toString() + "." + getFileExtension(resultImage!!)
+                        System.currentTimeMillis().toString() + "." + getFileExtension(resultImage)
                     )
-                    mUploadTask = fileReference.putFile(resultImage!!)
+                    mUploadTask = fileReference.putFile(resultImage)
                         .addOnSuccessListener {
                             fileReference.downloadUrl.addOnSuccessListener { uri: Uri ->
                                 val attendance = Attendance(

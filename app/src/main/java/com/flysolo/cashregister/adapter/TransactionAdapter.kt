@@ -41,16 +41,16 @@ class TransactionAdapter(val context: Context, options: FirestoreRecyclerOptions
         RecyclerView.ViewHolder(itemView) {
 
         val cashier: TextView = itemView.findViewById<TextView>(R.id.cashierName)
-        val date = itemView.findViewById<TextView>(R.id.date)
-        val total = itemView.findViewById<TextView>(R.id.transactionTotal)
+        val date: TextView = itemView.findViewById<TextView>(R.id.date)
+        val total: TextView = itemView.findViewById<TextView>(R.id.transactionTotal)
     }
 
     private fun dateFormat(timestamp: Long): String {
         val simpleDateFormat = SimpleDateFormat("dd-MMM hh:mm a")
         return simpleDateFormat.format(timestamp)
     }
-    private fun computeTotalSales(items : List<ItemPurchased>): Int {
-        var total = 0
+    private fun computeTotalSales(items : List<ItemPurchased>): Double {
+        var total = 0.0
         for (price in items){
             if (price.itemPurchasedIsRefunded != true){
                 total += price.itemPurchasedPrice!!
