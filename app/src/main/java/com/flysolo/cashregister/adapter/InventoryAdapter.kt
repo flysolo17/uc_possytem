@@ -21,6 +21,7 @@ import com.flysolo.cashregister.R
 import com.flysolo.cashregister.firebase.models.Items
 
 import com.squareup.picasso.Picasso
+import java.text.DecimalFormat
 
 class InventoryAdapter(val context: Context, options: FirestoreRecyclerOptions<Items?>,val itemClick: ItemClick) :
     FirestoreRecyclerAdapter<Items, InventoryAdapter.InventoryViewModel>(options) {
@@ -37,10 +38,11 @@ class InventoryAdapter(val context: Context, options: FirestoreRecyclerOptions<I
 
     override fun onBindViewHolder(holder: InventoryViewModel, position: Int, model: Items) {
         val item = getItem(position)
+        val decimalFormat = DecimalFormat("#,###.00")
         holder.itemName.text = item.itemName
         holder.itemCategory.text = item.itemCategory
-        holder.itemCost.text = item.itemCost.toString()
-        holder.itemPrice.text = item.itemPrice.toString()
+        holder.itemCost.text = decimalFormat.format(item.itemCost)
+        holder.itemPrice.text = decimalFormat.format(item.itemPrice)
         holder.itemQuantity.text = item.itemQuantity.toString()
         if (item.itemImageURL!!.isNotEmpty()){
             Picasso.get().load(item.itemImageURL).placeholder(R.drawable.store).into(holder.itemImage)

@@ -1,151 +1,67 @@
 package com.flysolo.cashregister
 
 import android.app.Activity
-import android.app.Dialog
+
 import android.content.Intent
 import android.graphics.Color
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.util.Log
-import android.view.View
+
 import android.view.WindowManager
-import android.widget.*
-import com.chaos.view.PinView
+import android.widget.Toast
+
 import com.flysolo.cashregister.activities.*
+import com.flysolo.cashregister.admin.Inventory
 
 import com.flysolo.cashregister.databinding.ActivityMainBinding
 import com.flysolo.cashregister.firebase.QueryDates
 import com.flysolo.cashregister.firebase.models.Cashier
+import com.flysolo.cashregister.firebase.models.Transaction
 
 import com.flysolo.cashregister.firebase.models.User
-import com.flysolo.cashregister.login.LoginActivity
-
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.picasso.Picasso
-import java.lang.NumberFormatException
 import java.text.DecimalFormat
 
-const val defaultCashier = "No cashier"
 
-val decimalFormat = DecimalFormat("#.##")
+
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var firestore: FirebaseFirestore
 
-    private var cashierList = mutableListOf<Cashier>()
-    private var cashierNames = mutableListOf(defaultCashier)
-    private var activity : Activity? = null
-    private lateinit var adminDialog : Dialog
-    private lateinit var pinLayout : View
-    private lateinit var storePinView: PinView
-    private var store : String? = null
+    private val decimalFormat = DecimalFormat("0.00")
     private var uid : String ? = null
+    private var cashierID : String ? = null
+    private var cashierName : String ? = null
+    private var store : String ? = null
     private val queryDates = QueryDates()
-    private lateinit var transactionList : MutableList<com.flysolo.cashregister.firebase.models.Transaction>
+    private lateinit var transactionList : MutableList<Transaction>
     private fun initViews(uid: String) {
         firestore = FirebaseFirestore.getInstance()
         fetchCurrentUser(uid)
-        getALlCashier(uid)
-        val cashierAdapter = ArrayAdapter(this,android.R.layout.simple_list_item_1,cashierNames)
-        transactionList = mutableListOf()
-        binding.cashierSpinner.apply {
-            adapter = cashierAdapter
-            onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                    if (p2 != 0) {
-                        showDialog(cashierList[p2-1],p2)
-                        binding.textCashierSales.text = decimalFormat.format(getCashierTotalSales(cashierList[p2-1].cashierName!!))
-                        binding.textCostOfGoods.text = decimalFormat.format(getCashierCostOfGoods(cashierList[p2-1].cashierName!!))
-                    }
-                }
-                override fun onNothingSelected(p0: AdapterView<*>?) {
-                    Toast.makeText(this@MainActivity,"Please Select cashier",Toast.LENGTH_SHORT).show()
-                }
-            }
 
-        }
-        adminDialog = Dialog(this)
-        pinLayout= layoutInflater.inflate(R.layout.dialog_admin_pincode,null,false)
-        storePinView = pinLayout.findViewById(R.id.storePin)
-        storePinView.addTextChangedListener(storePinWatcher)
     }
-
-    private fun showDialog(cashier: Cashier,position : Int) {
-        val dialogs = Dialog(this)
-        dialogs.setTitle("Cashier Login")
-        dialogs.setContentView(R.layout.fragment_cashier_pin_dialog)
-        val cashierName : TextView = dialogs.findViewById(R.id.textCashierName)
-        val cashierProfile : ImageView = dialogs.findViewById(R.id.cashierProfile)
-        val inputPinCode : EditText = dialogs.findViewById(R.id.inputPinCode)
-        val buttonCancel : Button = dialogs.findViewById(R.id.buttonCancel)
-        val buttonSave : Button = dialogs.findViewById(R.id.buttonSave)
-        cashierName.text = cashier.cashierName
-        if (cashier.cashierProfile!!.isNotEmpty()){
-            Picasso.get().load(cashier.cashierProfile).into(cashierProfile)
-        }
-        dialogs.setTitle("Cashier Login")
-        dialogs.setCancelable(false)
-        dialogs.show()
-
-        buttonCancel.setOnClickListener {
-            binding.cashierSpinner.setSelection(0)
-            dialogs.dismiss()
-
-        }
-        buttonSave.setOnClickListener {
-            if (cashier.cashierPin.equals(inputPinCode.text.toString())) {
-                binding.cashierSpinner.setSelection(position)
-                dialogs.dismiss()
-            } else {
-                inputPinCode.error = "Wrong Pin"
-            }
-        }
-    }
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        cashierID = intent.getStringExtra(Cashier.CASHIER_ID)
         uid = intent.getStringExtra(User.USER_ID)
         initViews(uid!!)
+        getCashier(uid!!, cashierID!!)
 
         binding.buttonInventory.setOnClickListener {
-            startActivity(Intent(this,Inventory::class.java).putExtra(User.USER_ID,uid))
+            startActivity(Intent(this, CashierInventory::class.java))
         }
-        binding.buttonLogout.setOnClickListener {
-            FirebaseAuth.getInstance().signOut()
-            Toast.makeText(this,"Successfully Log out!",Toast.LENGTH_SHORT).show()
-            startActivity(Intent(this,LoginActivity::class.java))
-        }
-        binding.buttonProfile.setOnClickListener {
-            if (user != null) {
-                startActivity(Intent(this,UpdateAccount::class.java).putExtra(User.TABLE_NAME,user).putExtra(User.USER_ID,uid))
-            }
-        }
+        
         binding.buttonPOS.setOnClickListener {
-            posActivity(binding.cashierSpinner.selectedItem.toString(), uid!!)
-        }
-
-        binding.buttonTransaction.setOnClickListener {
-            activity = Transaction()
-
-            if (!adminDialog.isShowing) {
-                adminDialog.setContentView(pinLayout)
-                adminDialog.show()
-            }
+            posActivity(cashierName!!, uid!!)
         }
         binding.buttonCashDrawer.setOnClickListener {
-            activity = CashDrawerActivity()
-            if (!adminDialog.isShowing) {
-                adminDialog.setContentView(pinLayout)
-                adminDialog.show()
-            }
+            startActivity(Intent(this,CashDrawerActivity::class.java).putExtra(Cashier.CASHIER_ID,cashierID))
         }
 
         //attendance
@@ -153,16 +69,10 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this,AttendanceActivity::class.java).putExtra(User.USER_ID,uid))
         }
 
-        binding.buttonEmployee.setOnClickListener {
-            activity = CashierActivity()
-            if (!adminDialog.isShowing) {
-                adminDialog.setContentView(pinLayout)
-                adminDialog.show()
-            }
-        }
+
     }
-    private fun getCashierTotalSales(cashierName: String) : Double {
-        var sales = 0.0
+    private fun getCashierTotalSales(transactionList : List<Transaction>,cashierName: String) : String {
+        var sales : Double = 0.toDouble()
 
         for(trans in transactionList) {
             if (trans.transactionCashier.equals(cashierName)){
@@ -173,10 +83,10 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        return sales
+        return decimalFormat.format(sales)
     }
-    private fun getCashierCostOfGoods(cashierName: String) : Double {
-        var sales = 0.00
+    private fun getCashierCostOfGoods(transactionList : List<Transaction>,cashierName: String) : String {
+        var sales : Double = 0.toDouble()
         for(trans in transactionList) {
             if (trans.transactionCashier.equals(cashierName)){
                 trans.transactionItems?.map { transition ->
@@ -184,35 +94,30 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        return sales
+        return decimalFormat.format(sales)
     }
-    private fun getTransactionToday(uid: String){
-        transactionList.clear()
+    private fun getTransactionToday(uid: String,cashierName: String){
+        transactionList = mutableListOf()
         firestore.collection(User.TABLE_NAME)
             .document(uid)
-            .collection(com.flysolo.cashregister.firebase.models.Transaction.TABLE_NAME)
-            .whereGreaterThan(com.flysolo.cashregister.firebase.models.Transaction.TIMESTAMP,queryDates.startOfDay(System.currentTimeMillis()))
-            .whereLessThan(com.flysolo.cashregister.firebase.models.Transaction.TIMESTAMP,queryDates.endOfDay(System.currentTimeMillis()))
+            .collection(Transaction.TABLE_NAME)
+            .whereGreaterThan(Transaction.TIMESTAMP,queryDates.startOfDay(System.currentTimeMillis()))
+            .whereLessThan(Transaction.TIMESTAMP,queryDates.endOfDay(System.currentTimeMillis()))
             .addSnapshotListener { value, error ->
+                transactionList.clear()
                 if (error != null) {
                     error.printStackTrace()
                 } else {
                     value?.map { documents ->
-                        val transaction = documents.toObject(com.flysolo.cashregister.firebase.models.Transaction::class.java)
+                        val transaction = documents.toObject(Transaction::class.java)
                         transactionList.add(transaction)
                     }
+                    binding.textCashierSales.text = getCashierTotalSales(transactionList,cashierName)
+                    binding.textCostOfGoods.text = getCashierCostOfGoods(transactionList, cashierName)
                 }
             }
     }
 
-
-    private fun posActivity(cashierName: String,uid: String) {
-        if (cashierName.isEmpty() || cashierName == defaultCashier){
-            Toast.makeText(this,"No cashier",Toast.LENGTH_SHORT).show()
-        } else {
-            startActivity(Intent(this, Pos::class.java).putExtra(Cashier.CASHIER_NAME,cashierName).putExtra(User.USER_ID,uid).putExtra(User.BUSINESS_NAME,store))
-        }
-    }
 
     private fun fetchCurrentUser(uid : String){
         if (uid.isNotEmpty()) {
@@ -223,69 +128,53 @@ class MainActivity : AppCompatActivity() {
                     if (it.exists()){
                         val user = it.toObject(User::class.java)
                         MainActivity.user = user
-                        store = user?.userBusinessName
-                        if (user?.userProfile!!.isNotEmpty()){
-                            Picasso.get().load(user.userProfile).placeholder(R.drawable.store).into(binding.imageAddStoreImage)
+                        if (user != null) {
+                            this.store = user.userBusinessName
+                            binding.textBusinessName.text = user.userBusinessName
                         }
-                        binding.textBusinessName.text = user.userBusinessName
-                        binding.textOwnerName.text = user.userFirstname + " " + user.userLastname
                     }
                 }
         }
     }
-
-    private fun getALlCashier(uid: String){
+    private fun getCashier(uid: String,cashierID : String) {
         firestore.collection(User.TABLE_NAME)
             .document(uid)
             .collection(Cashier.TABLE_NAME)
+            .document(cashierID)
             .get()
-            .addOnSuccessListener { documents ->
-                for (document in documents) {
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
                     val cashier = document.toObject(Cashier::class.java)
-                    cashierList.add(cashier)
-                    cashierNames.add(cashier.cashierName!!)
+                    if (cashier != null) {
+                        this.cashierName = cashier.cashierName
+                        displayCashierInfo(cashier)
+                        getTransactionToday(uid, cashier.cashierName!!)
+                    }
                 }
             }
-            .addOnFailureListener { exception ->
-                Log.w("AddRecipe", "Error getting documents: ", exception)
-            }
     }
+
+    private fun displayCashierInfo(cashier: Cashier?) {
+        if (cashier != null) {
+            if (cashier.cashierProfile!!.isNotEmpty()){
+                Picasso.get().load(cashier.cashierProfile).into(binding.cashierProfile)
+            }
+            binding.textCashierName.text = cashier.cashierName
+        }
+    }
+
 
     override fun onResume() {
         super.onResume()
         window?.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-        getTransactionToday(LoginActivity.uid)
+
     }
-
-    private val storePinWatcher: TextWatcher = object : TextWatcher {
-        override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-        override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
-        override fun afterTextChanged(s: Editable) {
-            try {
-                if (s.toString().length == 6) {
-                    if (s.toString() == user!!.userStorePin ){
-                        if (activity != null) {
-                            storePinView.editableText.clear()
-                            adminDialog.dismiss()
-                            adminActivities(activity!!, uid!!)
-                        }
-                    } else {
-                        storePinView.editableText.clear()
-                        Toast.makeText(
-                            this@MainActivity,
-                            "Invalid Pin",
-                            Toast.LENGTH_SHORT
-                        ).show()
-
-                    }
-
-                }
-            } catch (ignored: NumberFormatException) {
-            }
+    private fun posActivity(cashierName: String,uid: String) {
+        if (cashierName.isEmpty() || cashierName == defaultCashier){
+            Toast.makeText(this,"No cashier", Toast.LENGTH_SHORT).show()
+        } else {
+            startActivity(Intent(this, Pos::class.java).putExtra(Cashier.CASHIER_NAME,cashierName).putExtra(User.USER_ID,uid).putExtra(User.BUSINESS_NAME,store))
         }
-    }
-    private fun adminActivities(activity: Activity,uid: String) {
-        startActivity(Intent(this@MainActivity, activity::class.java).putExtra(User.USER_ID,uid))
     }
 
 

@@ -1,4 +1,4 @@
-package com.flysolo.cashregister.activities
+package com.flysolo.cashregister.admin
 
 import android.content.Intent
 import android.net.Uri
@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.flysolo.cashregister.MainActivity
 import com.flysolo.cashregister.R
 import com.flysolo.cashregister.databinding.ActivityUpdateAccountBinding
+
 import com.flysolo.cashregister.dialog.ProgressDialog
 import com.flysolo.cashregister.firebase.models.User
 import com.flysolo.cashregister.viewmodels.UserViewModel

@@ -11,6 +11,7 @@ import com.flysolo.cashregister.R
 
 import com.flysolo.cashregister.firebase.models.ItemPurchased
 import com.flysolo.cashregister.firebase.models.Transaction
+import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 
 
@@ -29,9 +30,10 @@ class TransactionAdapter(val context: Context, options: FirestoreRecyclerOptions
 
     override fun onBindViewHolder(holder: TransactionViewHolder, position: Int, model: Transaction) {
         val transaction = getItem(position)
+        val decimalFormat= DecimalFormat("0.00")
         holder.cashier.text = transaction.transactionCashier
         holder.date.text = dateFormat(transaction.transactionTimestamp!!)
-        holder.total.text = computeTotalSales(transaction.transactionItems!!).toString()
+        holder.total.text = decimalFormat.format(computeTotalSales(transaction.transactionItems!!))
         holder.itemView.setOnClickListener {
             onTransactionClick.onTransactionClick(position)
         }
@@ -39,10 +41,9 @@ class TransactionAdapter(val context: Context, options: FirestoreRecyclerOptions
 
     inner class TransactionViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
-
-        val cashier: TextView = itemView.findViewById<TextView>(R.id.cashierName)
-        val date: TextView = itemView.findViewById<TextView>(R.id.date)
-        val total: TextView = itemView.findViewById<TextView>(R.id.transactionTotal)
+        val cashier: TextView = itemView.findViewById(R.id.cashierName)
+        val date: TextView = itemView.findViewById(R.id.date)
+        val total: TextView = itemView.findViewById(R.id.transactionTotal)
     }
 
     private fun dateFormat(timestamp: Long): String {

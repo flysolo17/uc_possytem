@@ -85,7 +85,7 @@ class Pos : AppCompatActivity() , ItemAdapter.OnItemIsClick, View.OnClickListene
     private var imageSize = 224
     private var itemResultBitmap : Bitmap?  = null
 
-    val decimalFormat = DecimalFormat("#.##")
+    val decimalFormat = DecimalFormat("0.00")
 
     private fun _init(uid: String) {
         val fileName="labels.txt"
@@ -259,7 +259,7 @@ class Pos : AppCompatActivity() , ItemAdapter.OnItemIsClick, View.OnClickListene
             Picasso.get().load(items.itemImageURL).placeholder(R.drawable.store).into(itemImage)
         }
         itemName.text = items.itemName
-        itemPrice.text = items.itemPrice.toString()
+        itemPrice.text = decimalFormat.format(items.itemPrice)
         itemBarcode.text = items.itemBarcode
         itemCategory.text = items.itemCategory
         val textQuantity : TextView = dialog.findViewById(R.id.text_quantity)
@@ -278,7 +278,7 @@ class Pos : AppCompatActivity() , ItemAdapter.OnItemIsClick, View.OnClickListene
             dialog.dismiss()
         }
         buttonPurchase.setOnClickListener {
-            val total = Integer.parseInt(textQuantity.text.toString()) * items.itemPrice!!
+            val total  : Double = textQuantity.text.toString().toDouble() * items.itemPrice!!
             itemPurchasedList.add(ItemPurchased(items.itemBarcode,
                 items.itemName,
                 Integer.parseInt(textQuantity.text.toString()),
@@ -425,7 +425,7 @@ class Pos : AppCompatActivity() , ItemAdapter.OnItemIsClick, View.OnClickListene
                     itemPurchasedList.removeAt(pos)
                     itemPurchasedAdapter.notifyItemRemoved(pos)
                     binding.textItemCounter.text = refreshItemCounter().toString()
-                    binding.textSubTotal.text = refreshSubtotalTotalAmount().toString()
+                    binding.textSubTotal.text = refreshSubtotalTotalAmount()
 
                 }
             })
@@ -453,14 +453,14 @@ class Pos : AppCompatActivity() , ItemAdapter.OnItemIsClick, View.OnClickListene
         return counter
     }
     //TODO: refresh the total amount of the order
-    private fun refreshSubtotalTotalAmount(): Double {
+    private fun refreshSubtotalTotalAmount(): String {
         var purchasesSubtotal = 0.0
         if (itemPurchasedList.isNotEmpty()) {
             for (i in itemPurchasedList.indices) {
                 purchasesSubtotal += itemPurchasedList[i].itemPurchasedPrice!!
             }
         }
-        return purchasesSubtotal
+        return decimalFormat.format(purchasesSubtotal)
     }
     @SuppressLint("SetTextI18n")
     override fun onClick(v: View?) {
@@ -508,7 +508,6 @@ class Pos : AppCompatActivity() , ItemAdapter.OnItemIsClick, View.OnClickListene
             val cashReceived: Double = text_cash_recieved.text.toString().toDouble()
             if (cashReceived > subtotal) {
                 val total = cashReceived - subtotal
-
                 text_cash_change.text = decimalFormat.format(total)
             } else text_cash_change.text = decimalFormat.format(0)
         }

@@ -22,11 +22,13 @@
             android:text="@{items.itemName}"
             android:fontFamily="@font/poppins_medium" />
 
+
         <TextView
+            android:id="@+id/textItemPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:text="@{String.valueOf(items.itemPrice)}"
+            android:text="@string/_0"
             android:fontFamily="@font/poppins_medium" />
     </LinearLayout>
 </layout>

@@ -5,7 +5,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +15,6 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.DialogFragment
-
 import com.flysolo.cashregister.databinding.FragmentAddInventoryBinding
 import com.flysolo.cashregister.dialog.ProgressDialog
 import com.flysolo.cashregister.firebase.FirebaseQueries
@@ -27,11 +25,14 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.StorageTask
+import com.google.zxing.client.android.Intents
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanIntentResult
-import java.io.IOException
-import com.google.zxing.client.android.Intents
 import com.journeyapps.barcodescanner.ScanOptions
+import java.io.IOException
+import java.math.RoundingMode
+import java.text.DecimalFormat
+import kotlin.math.roundToInt
 
 class AddInventory : DialogFragment() {
     private lateinit var binding : FragmentAddInventoryBinding
@@ -43,6 +44,7 @@ class AddInventory : DialogFragment() {
     private var galleryLauncher: ActivityResultLauncher<Intent>? = null
     private lateinit var progressDialog : ProgressDialog
     private lateinit var categoryAdapter : ArrayAdapter<*>
+    val decimalFormat = DecimalFormat("#.##")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(
@@ -141,6 +143,7 @@ class AddInventory : DialogFragment() {
         val itemCost: String = binding.inputCost.text.toString()
         val itemPrice: String = binding.inputPrice.text.toString()
         val itemQuantity: String = binding.inputQuantity.text.toString()
+
         when {
             itemName.isEmpty() -> {
                 binding.inputItemName.error = "Enter item name"
@@ -150,23 +153,21 @@ class AddInventory : DialogFragment() {
                 binding.inputBarcode.error = "Enter item barcode"
 
             }
+            itemCost.isEmpty() -> {
+                binding.inputCost.error = "Enter item item cost"
+            }
+            itemPrice.isEmpty()-> {
+                binding.inputPrice.error = "Enter item price"
+            }
 
             itemCategory.isEmpty() -> {
                 binding.inputCategory.error = "Enter item category"
 
             }
-            itemCost.isEmpty() -> {
-                binding.inputCost.error = "Enter item cost"
-
-            }
-            itemPrice.isEmpty() -> {
-                binding.inputPrice.error = "Enter item price"
-
-            }
             itemQuantity.isEmpty() -> {
                 binding.inputQuantity.error = "Enter item quantity"
-
             }
+
             else -> {
                 if (imageURI != null) {
                     progressDialog.loading()
@@ -213,4 +214,8 @@ class AddInventory : DialogFragment() {
             }
         return  list
     }
+    private fun roundTwoDecimals(num : Float): String {
+        return "%.2f".format(num)
+    }
+
 }

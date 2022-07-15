@@ -3,6 +3,7 @@ package com.flysolo.cashregister.firebase.models
 
 
 class CashDrawer(var cashDrawerID:  String? = "",
+                 var cashierID:  String? = null,
                  var startingCash: Int? = 0,
                  var cashAdded : List<Int> = mutableListOf(),
                  var timestamp: Long? = null){

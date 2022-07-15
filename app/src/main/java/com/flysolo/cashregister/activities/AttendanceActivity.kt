@@ -20,13 +20,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.flysolo.cashregister.R
 import com.flysolo.cashregister.adapter.AttendanceAdapter
 import com.flysolo.cashregister.databinding.ActivityAttendanceBinding
-import com.flysolo.cashregister.defaultCashier
+
 import com.flysolo.cashregister.firebase.FirebaseQueries
 import com.flysolo.cashregister.firebase.QueryDates
 import com.flysolo.cashregister.firebase.models.Attendance
 import com.flysolo.cashregister.firebase.models.Cashier
 import com.flysolo.cashregister.firebase.models.User
-import com.flysolo.cashregister.login.LoginActivity
+
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -81,6 +81,9 @@ class AttendanceActivity : AppCompatActivity(),AttendanceAdapter.SelfieOutIsClic
                     Toast.makeText(this@AttendanceActivity,"Please Select cashier", Toast.LENGTH_SHORT).show()
                 }
             }
+        }
+        binding.buttonBack.setOnClickListener {
+            finish()
         }
         cameraLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             if (result.data != null) {

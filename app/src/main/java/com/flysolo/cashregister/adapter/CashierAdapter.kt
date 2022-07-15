@@ -35,7 +35,6 @@ class CashierAdapter(
     override fun onBindViewHolder(holder: CashierViewHolder, position: Int, model: Cashier) {
         val item = getItem(position)
         holder.bindProduct(item)
-
     }
     inner class CashierViewHolder(
         private val rowCashierBinding: RowCashierBinding

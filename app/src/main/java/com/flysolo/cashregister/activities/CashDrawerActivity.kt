@@ -12,12 +12,14 @@ import com.flysolo.cashregister.R
 import com.flysolo.cashregister.databinding.ActivityCashDrawerBinding
 import com.flysolo.cashregister.firebase.QueryDates
 import com.flysolo.cashregister.firebase.models.CashDrawer
+import com.flysolo.cashregister.firebase.models.Cashier
 import com.flysolo.cashregister.firebase.models.Transaction
 import com.flysolo.cashregister.firebase.models.User
 import com.flysolo.cashregister.login.LoginActivity
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.firebase.firestore.FirebaseFirestore
+import java.text.DecimalFormat
 import java.text.Format
 import java.text.SimpleDateFormat
 import java.util.*
@@ -33,7 +35,8 @@ class CashDrawerActivity : AppCompatActivity() {
     private var startingCash = 0
     private var cashAdded = 0
     private var  sales = 0.0
-    private fun init() {
+    private val decimalFormat = DecimalFormat("0.00")
+    private fun init(cashierID: String) {
         firestore = FirebaseFirestore.getInstance()
         dialog = BottomSheetDialog(this)
         transactionList = mutableListOf()
@@ -41,16 +44,17 @@ class CashDrawerActivity : AppCompatActivity() {
         calendar.clear()
         today = MaterialDatePicker.todayInUtcMilliseconds()
         getAllTransactionsToday(today)
-        getCashDrawerToday(today)
+        getCashDrawerToday(cashierID,today)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCashDrawerBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        init()
+        val cashierID = intent.getStringExtra(Cashier.CASHIER_ID)
+        init(cashierID!!)
         binding.buttonSetCashDrawer.setOnClickListener {
-            showDialog()
+            showDialog(cashierID)
         }
         binding.buttonBack.setOnClickListener {
             finish()
@@ -66,7 +70,7 @@ class CashDrawerActivity : AppCompatActivity() {
                 binding.buttonPickDate.text = datePicker.headerText
                 binding.buttonPickDate.isEnabled = true
                 getAllTransactionsToday(selection)
-                getCashDrawerToday(selection)
+                getCashDrawerToday(cashierID,selection)
             }
         }
         datePicker.addOnDismissListener {
@@ -77,15 +81,14 @@ class CashDrawerActivity : AppCompatActivity() {
         }
     }
 
-    private fun getCashDrawerToday(today: Long) {
+    private fun getCashDrawerToday(cashierID: String,today: Long) {
         startingCash = 0
         cashAdded = 0
         cashAddedList.clear()
-
         firestore.collection(User.TABLE_NAME)
             .document(LoginActivity.uid)
             .collection(CashDrawer.TABLE_NAME)
-            .document(setCalendarFormat(today)!!)
+            .document(cashierID+setCalendarFormat(today)!!)
             .get()
             .addOnSuccessListener { document ->
                 if (document.exists()) {
@@ -118,7 +121,6 @@ class CashDrawerActivity : AppCompatActivity() {
                 queryDates.endOfDay(date)
             )
         query.get()
-
           .addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 if (task.result != null) {
@@ -141,9 +143,9 @@ class CashDrawerActivity : AppCompatActivity() {
     private fun bindViews(startingCash : Int ,cashAdded : Int,transactions: List<Transaction>) {
         binding.textStartingCash.text = startingCash.toString()
         binding.textCashAdded.text = cashAdded.toString()
-        binding.textCashSales.text = computeTotalSales(transactions).toString()
+        binding.textCashSales.text = decimalFormat.format(computeTotalSales(transactions))
         val total : Double = (startingCash + cashAdded) + computeTotalSales(transactions)
-        binding.textTotal.text = total.toString()
+        binding.textTotal.text = decimalFormat.format(total)
     }
 
     private fun computeTotalSales(transactions: List<Transaction>): Double {
@@ -157,7 +159,7 @@ class CashDrawerActivity : AppCompatActivity() {
         return total
     }
 
-    private fun showDialog(){
+    private fun showDialog(cashierID : String){
         cashAddedList.clear()
         val view = layoutInflater.inflate(R.layout.dialog_cash_drawer,null,false)
         val buttonSave : Button = view.findViewById(R.id.buttonSaveDrawer)
@@ -180,11 +182,13 @@ class CashDrawerActivity : AppCompatActivity() {
                 inputStartingCash.error = "Invalid"
             }
             else {
-                val cashDrawer = CashDrawer(setCalendarFormat(today)
+                val cashDrawer = CashDrawer(cashierID+setCalendarFormat(today),
+                    cashierID
+
                     ,Integer.parseInt(startingCash),
                     cashAddedList,
                     System.currentTimeMillis())
-                saveStartingCash(cashDrawer)
+                saveStartingCash(cashierID,cashDrawer)
                 cashAddedList.clear()
             }
         }
@@ -207,7 +211,7 @@ class CashDrawerActivity : AppCompatActivity() {
         }
         return total
     }
-    private fun saveStartingCash(cashDrawer: CashDrawer) {
+    private fun saveStartingCash(cashierID: String,cashDrawer: CashDrawer) {
         firestore.collection(User.TABLE_NAME).document(LoginActivity.uid)
             .collection(CashDrawer.TABLE_NAME)
             .document(cashDrawer.cashDrawerID!!)
@@ -217,7 +221,7 @@ class CashDrawerActivity : AppCompatActivity() {
                     dialog.dismiss()
                     Toast.makeText(this,"Success",Toast.LENGTH_SHORT).show()
                     getAllTransactionsToday(today)
-                    getCashDrawerToday(today)
+                    getCashDrawerToday(cashierID,today)
                 }
             }
     }

@@ -130,8 +130,8 @@ class LoginActivity : AppCompatActivity() {
     private fun updateUI(currentUser: FirebaseUser?) {
         if (currentUser != null){
             uid = currentUser.uid
-            val intent = Intent(this, MainActivity::class.java)
-                intent.putExtra(User.USER_ID,currentUser.uid)
+            val intent = Intent(this, Accounts::class.java)
+            intent.putExtra(User.USER_ID,currentUser.uid)
             startActivity(intent)
         }
     }

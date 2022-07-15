@@ -14,6 +14,7 @@
         <!-- Customize your theme here. -->
 
     </style>
+
     <style name="Theme.CashRegister.NoActionBarAndStatusBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
@@ -21,12 +22,15 @@
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:fitsSystemWindows">true</item>
     </style>
+
     <style name="Theme.CashRegister.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.CashRegister.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
     <style name="ShapeAppearanceOverlay.App.CornerSize10Percent" parent="">
         <item name="cornerSize">10%</item>
     </style>
+
     <style name="ShapeAppearanceOverlay.App.CornerCut" parent="">
         <item name="cornerSize">10dp</item>
         <item name="cornerFamily">cut</item>
@@ -34,5 +38,10 @@
 
     <style name="AppTheme" parent="Theme.AppCompat.Light">
         <item name="pinViewStyle">@style/PinWidget.PinView</item>
+    </style>
+
+    <style name="Theme.CashRegister.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
 </resources>

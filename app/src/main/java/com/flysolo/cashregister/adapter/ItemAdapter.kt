@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.flysolo.cashregister.databinding.RowItemsBinding
 import com.flysolo.cashregister.firebase.models.Items
+import java.text.DecimalFormat
 
 class ItemAdapter(val context: Context,val itemList : List<Items>, val onItemIsClick: OnItemIsClick)  :
     RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
@@ -16,8 +17,10 @@ class ItemAdapter(val context: Context,val itemList : List<Items>, val onItemIsC
     }
 
     inner class ItemViewHolder(private val dataBinding: RowItemsBinding) : RecyclerView.ViewHolder(dataBinding.root) {
+        private val decimalFormat = DecimalFormat("#,###.00")
         fun bindProduct(item: Items) {
             dataBinding.items = item
+            dataBinding.textItemPrice.text = decimalFormat.format(item.itemPrice)
         }
     }
 

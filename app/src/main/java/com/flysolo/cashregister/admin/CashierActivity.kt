@@ -1,17 +1,15 @@
-package com.flysolo.cashregister.activities
+package com.flysolo.cashregister.admin
 
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
-import android.view.View
 import android.webkit.MimeTypeMap
 import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.flysolo.cashregister.R
@@ -20,10 +18,9 @@ import com.flysolo.cashregister.databinding.ActivityCashierBinding
 import com.flysolo.cashregister.dialog.ProgressDialog
 import com.flysolo.cashregister.firebase.FirebaseQueries
 import com.flysolo.cashregister.firebase.models.Cashier
-import com.flysolo.cashregister.firebase.models.Items
 import com.flysolo.cashregister.firebase.models.User
-import com.flysolo.cashregister.login.LoginActivity
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -67,7 +64,7 @@ class CashierActivity : AppCompatActivity(),CashierAdapter.CashierClickListener 
         super.onCreate(savedInstanceState)
         binding = ActivityCashierBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        uid = intent.getStringExtra(User.USER_ID)
+        uid = FirebaseAuth.getInstance().currentUser!!.uid
         init(uid!!)
         //Get image in the gallery
         galleryLauncher =
@@ -166,4 +163,5 @@ class CashierActivity : AppCompatActivity(),CashierAdapter.CashierClickListener 
     override fun onCashierClick(pos: Int) {
         Toast.makeText(this,cashierAdapter.getItem(pos).cashierName,Toast.LENGTH_SHORT).show()
     }
+
 }

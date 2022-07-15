@@ -35,24 +35,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Cashier : "
-                android:textSize="16sp"
-                android:fontFamily="@font/poppins_medium"/>
-            <Spinner
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:id="@+id/cashierSpinner"
-                android:textColor="@color/black"
-                android:fontFamily="@font/poppins_semibold"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -62,6 +44,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
+                    android:padding="10dp"
                     android:id="@+id/textCostOfGoods"
                     android:text="@string/_0"
                     android:textSize="18sp"
@@ -77,8 +60,9 @@
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
+
                 android:orientation="vertical">
                 <TextView
                     android:layout_width="match_parent"
@@ -86,6 +70,7 @@
                     android:gravity="center"
                     android:id="@+id/textCashierSales"
                     android:text="@string/_0"
+                    android:padding="10dp"
                     android:textSize="18sp"
                     android:textColor="@color/black"
                     android:fontFamily="@font/poppins_semibold"/>
@@ -93,7 +78,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="@string/cash_sales_today"
+                    android:text="@string/cash_sales"
                     android:textSize="16sp"
                     android:fontFamily="@font/poppins_medium"/>
             </LinearLayout>
@@ -128,7 +113,7 @@
             android:orientation="horizontal">
             <com.google.android.material.imageview.ShapeableImageView
                 android:layout_width="50dp"
-                android:id="@+id/imageAddStoreImage"
+                android:id="@+id/cashierProfile"
                 android:clickable="true"
                 android:scaleType="centerCrop"
                 android:background="@drawable/store"
@@ -137,7 +122,7 @@
                 android:layout_margin="2dp"
                 android:focusable="true" />
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp"
                 android:layout_weight="1"
@@ -151,19 +136,13 @@
                     android:textSize="16sp"
                     android:textColor="@color/black"/>
                 <TextView
-                    android:id="@+id/textOwnerName"
+                    android:id="@+id/textCashierName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/cashier_name"
                     android:fontFamily="@font/poppins_medium" />
             </LinearLayout>
-            <ImageButton
-                android:id="@+id/buttonLogout"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_gravity="center"
-                android:background="@drawable/ic_logout"
-                android:contentDescription="@string/log_out" />
+
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -173,28 +152,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:id="@+id/buttonInventory"
-                    android:orientation="vertical">
-                    <ImageView
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/ic_menu"
-                        android:layout_margin="10dp"
-                        android:background="@color/white"/>
-                    <TextView
-                        android:gravity="center"
-                        android:fontFamily="@font/poppins_medium"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Inventory"/>
-                </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -244,14 +202,34 @@
 
 
         </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:id="@+id/buttonInventory"
+                    android:orientation="vertical">
+                    <ImageView
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_menu"
+                        android:layout_margin="10dp"
+                        android:background="@color/white"/>
+                    <TextView
+                        android:gravity="center"
+                        android:fontFamily="@font/poppins_medium"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Inventory"/>
+                </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -274,54 +252,10 @@
                         android:fontFamily="@font/poppins_medium"
                         android:text="Attendance"/>
                 </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:clickable="true"
-                    android:id="@+id/buttonEmployee"
-                    android:focusable="true"
-                    android:orientation="vertical">
-                    <ImageView
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/ic_two_user"
-                        android:layout_margin="10dp"
-                        android:background="@color/white"/>
-                    <TextView
-                        android:gravity="center"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins_medium"
-                        android:text="@string/employee"/>
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:id="@+id/buttonTransaction"
-                    android:orientation="vertical">
-                    <ImageView
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/ic_chart"
-                        android:layout_margin="10dp"
-                        android:background="@color/white"/>
-                    <TextView
-                        android:gravity="center"
-                        android:fontFamily="@font/poppins_medium"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/transactions"/>
-                </LinearLayout>
+
+
             </LinearLayout>
         </LinearLayout>
 
-
-    </LinearLayout>
 
 </LinearLayout>

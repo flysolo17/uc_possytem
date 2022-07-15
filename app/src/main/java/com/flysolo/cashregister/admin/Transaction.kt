@@ -1,14 +1,12 @@
-package com.flysolo.cashregister.activities
+package com.flysolo.cashregister.admin
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.core.util.Pair
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.flysolo.cashregister.R
 import com.flysolo.cashregister.adapter.TransactionAdapter
 import com.flysolo.cashregister.databinding.ActivityTransactionBinding
 import com.flysolo.cashregister.firebase.FirebaseQueries
