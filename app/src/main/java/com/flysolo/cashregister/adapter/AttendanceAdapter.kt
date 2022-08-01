@@ -27,7 +27,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class AttendanceAdapter(val context: Context, options: FirestoreRecyclerOptions<Attendance?>,val selfieOutIsClick: SelfieOutIsClick) :
+class AttendanceAdapter(val context: Context, options: FirestoreRecyclerOptions<Attendance?>,
+                        private val selfieOutIsClick: SelfieOutIsClick) :
     FirestoreRecyclerAdapter<Attendance, AttendanceAdapter.AttendanceViewHolder>(options) {
 
     interface SelfieOutIsClick{

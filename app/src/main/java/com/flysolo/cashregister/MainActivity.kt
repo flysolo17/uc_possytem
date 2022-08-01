@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity() {
             posActivity(cashierName!!, uid!!)
         }
         binding.buttonCashDrawer.setOnClickListener {
-            startActivity(Intent(this,CashDrawerActivity::class.java).putExtra(Cashier.CASHIER_ID,cashierID))
+            startActivity(Intent(this,CashDrawerActivity::class.java).putExtra(Cashier.CASHIER_ID,cashierID).putExtra(Cashier.CASHIER_NAME,cashierName))
         }
 
         //attendance

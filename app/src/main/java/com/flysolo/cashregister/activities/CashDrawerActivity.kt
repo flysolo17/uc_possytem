@@ -8,14 +8,21 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.flysolo.cashregister.R
+import com.flysolo.cashregister.adapter.CashierTransactions
+import com.flysolo.cashregister.adapter.TransactionAdapter
 import com.flysolo.cashregister.databinding.ActivityCashDrawerBinding
+import com.flysolo.cashregister.dialog.TransactionDialog
 import com.flysolo.cashregister.firebase.QueryDates
 import com.flysolo.cashregister.firebase.models.CashDrawer
 import com.flysolo.cashregister.firebase.models.Cashier
 import com.flysolo.cashregister.firebase.models.Transaction
 import com.flysolo.cashregister.firebase.models.User
 import com.flysolo.cashregister.login.LoginActivity
+import com.flysolo.cashregister.mystore.bottomnav.storehome.viewmodels.TransactionViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.firebase.firestore.FirebaseFirestore
@@ -23,28 +30,32 @@ import java.text.DecimalFormat
 import java.text.Format
 import java.text.SimpleDateFormat
 import java.util.*
-class CashDrawerActivity : AppCompatActivity() {
+class CashDrawerActivity : AppCompatActivity(),CashierTransactions.OnCashierTransactionClick {
     private lateinit var binding: ActivityCashDrawerBinding
     private lateinit var dialog: BottomSheetDialog
     private lateinit var firestore: FirebaseFirestore
-    private var cashAddedList: MutableList<Int> = mutableListOf()
     private var queryDates = QueryDates()
     private var cashDrawer : CashDrawer? = null
     private lateinit var transactionList: MutableList<Transaction>
     private var today: Long = 0
-    private var startingCash = 0
-    private var cashAdded = 0
-    private var  sales = 0.0
     private val decimalFormat = DecimalFormat("0.00")
+    private lateinit var cashierTransactions: CashierTransactions
+    private lateinit var transactionViewModel: TransactionViewModel
     private fun init(cashierID: String) {
         firestore = FirebaseFirestore.getInstance()
         dialog = BottomSheetDialog(this)
-        transactionList = mutableListOf()
+        transactionViewModel = ViewModelProvider(this)[TransactionViewModel::class.java]
         val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
         calendar.clear()
         today = MaterialDatePicker.todayInUtcMilliseconds()
-        getAllTransactionsToday(today)
-        getCashDrawerToday(cashierID,today)
+        cashDrawer = CashDrawer(cashierID+setCalendarFormat(today),cashierID)
+        binding.recyclerviewTransactions.apply {
+            layoutManager = LinearLayoutManager(this@CashDrawerActivity)
+            addItemDecoration(
+                DividerItemDecoration(this@CashDrawerActivity,
+                    DividerItemDecoration.VERTICAL)
+            )
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,63 +63,40 @@ class CashDrawerActivity : AppCompatActivity() {
         binding = ActivityCashDrawerBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val cashierID = intent.getStringExtra(Cashier.CASHIER_ID)
+        val cashierName = intent.getStringExtra(Cashier.CASHIER_NAME)
         init(cashierID!!)
+        getAllTransactionsToday(cashDrawer!!,today, cashierName!!)
+        getCashDrawerToday(cashierID,today,transactionList)
         binding.buttonSetCashDrawer.setOnClickListener {
-            showDialog(cashierID)
+            showDialog(cashierID, cashDrawer!!)
         }
         binding.buttonBack.setOnClickListener {
             finish()
         }
-        val datePicker = MaterialDatePicker.Builder.datePicker().build()
-        binding.buttonPickDate.setOnClickListener { v: View? ->
-            datePicker.show(supportFragmentManager, "DATE_PICKER")
-            binding.buttonPickDate.isEnabled = false
-        }
-
-        datePicker.addOnPositiveButtonClickListener { selection: Long? ->
-            if (selection != null) {
-                binding.buttonPickDate.text = datePicker.headerText
-                binding.buttonPickDate.isEnabled = true
-                getAllTransactionsToday(selection)
-                getCashDrawerToday(cashierID,selection)
-            }
-        }
-        datePicker.addOnDismissListener {
-            binding.buttonPickDate.isEnabled = true
-        }
-        datePicker.addOnCancelListener {
-            binding.buttonPickDate.isEnabled = true
-        }
     }
 
-    private fun getCashDrawerToday(cashierID: String,today: Long) {
-        startingCash = 0
-        cashAdded = 0
-        cashAddedList.clear()
+    private fun getCashDrawerToday(cashierID: String,today: Long,transactions: List<Transaction>) {
         firestore.collection(User.TABLE_NAME)
             .document(LoginActivity.uid)
             .collection(CashDrawer.TABLE_NAME)
             .document(cashierID+setCalendarFormat(today)!!)
-            .get()
-            .addOnSuccessListener { document ->
-                if (document.exists()) {
-                    val cashDrawer = document.toObject(CashDrawer::class.java)
-                    if (cashDrawer != null) {
-                        this.cashDrawer = cashDrawer
-                        cashAddedList.addAll(cashDrawer.cashAdded)
-                        startingCash = cashDrawer.startingCash!!
-                        cashAdded = computeCashAdded(cashAddedList)
-                        bindViews(startingCash, cashAdded,transactionList)
+            .addSnapshotListener { value, error ->
+                if (error != null) {
+                    error.printStackTrace()
+                } else {
+                    if (value != null) {
+                        if (value.exists()) {
+                            val cashDrawer = value.toObject(CashDrawer::class.java)
+                            this.cashDrawer = cashDrawer
+                        }
+                        bindViews(cashDrawer!!,transactions)
                     }
-                }
-                else {
-                    bindViews(startingCash,cashAdded,transactionList)
                 }
             }
         }
 
-    private fun getAllTransactionsToday(date : Long) {
-        transactionList.clear()
+    private fun getAllTransactionsToday(cashDrawer: CashDrawer,date : Long,cashierName : String) {
+        transactionList = mutableListOf()
         val query = firestore.collection(User.TABLE_NAME)
             .document(LoginActivity.uid)
             .collection(Transaction.TABLE_NAME)
@@ -120,31 +108,32 @@ class CashDrawerActivity : AppCompatActivity() {
                 Transaction.TIMESTAMP,
                 queryDates.endOfDay(date)
             )
-        query.get()
-          .addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                if (task.result != null) {
-                    for (document in task.result) {
-                        val transactions = document.toObject(Transaction::class.java)
+        query.addSnapshotListener { value, error ->
+            transactionList.clear()
+            if (error != null) {
+                error.printStackTrace()
+            } else {
+                value?.map { documents ->
+                    val transactions = documents.toObject(Transaction::class.java)
+                    if (transactions.transactionCashier.equals(cashierName)) {
                         transactionList.add(transactions)
-
-                        sales = if (transactionList.size != 0) {
-                            computeTotalSales(transactionList)
-                        } else {
-                            0.0
-                        }
-                        binding.textCashSales.text = sales.toString()
                     }
                 }
+                bindViews(cashDrawer,transactionList)
+                cashierTransactions = CashierTransactions(binding.root.context,transactionList,this)
+                binding.recyclerviewTransactions.adapter = cashierTransactions
             }
         }
     }
 
-    private fun bindViews(startingCash : Int ,cashAdded : Int,transactions: List<Transaction>) {
-        binding.textStartingCash.text = startingCash.toString()
-        binding.textCashAdded.text = cashAdded.toString()
+
+
+    private fun bindViews(cashDrawer: CashDrawer,transactions: List<Transaction>) {
+        val cashAdded = computeCashAdded(cashDrawer.cashAdded)
+        binding.textStartingCash.text = decimalFormat.format(cashDrawer.startingCash)
+        binding.textCashAdded.text = decimalFormat.format(cashAdded)
         binding.textCashSales.text = decimalFormat.format(computeTotalSales(transactions))
-        val total : Double = (startingCash + cashAdded) + computeTotalSales(transactions)
+        val total : Double = (cashDrawer.startingCash!! + cashAdded) + computeTotalSales(transactions)
         binding.textTotal.text = decimalFormat.format(total)
     }
 
@@ -159,37 +148,31 @@ class CashDrawerActivity : AppCompatActivity() {
         return total
     }
 
-    private fun showDialog(cashierID : String){
-        cashAddedList.clear()
+    private fun showDialog(cashierID : String,cashDrawer: CashDrawer){
         val view = layoutInflater.inflate(R.layout.dialog_cash_drawer,null,false)
         val buttonSave : Button = view.findViewById(R.id.buttonSaveDrawer)
         val inputStartingCash : EditText = view.findViewById(R.id.inputStartingCash)
         val inputCashAdded : EditText = view.findViewById(R.id.inputCashAdded)
         val textCashAdded : TextView = view.findViewById(R.id.textCashAdded)
-        if (cashDrawer != null) {
-            cashAddedList.addAll(cashDrawer!!.cashAdded)
-            inputStartingCash.setText(cashDrawer!!.startingCash.toString())
-            textCashAdded.text = computeCashAdded(cashAddedList).toString()
-        }
+        inputStartingCash.setText(cashDrawer.startingCash.toString())
+        textCashAdded.text = computeCashAdded(cashDrawer.cashAdded).toString()
 
         buttonSave.setOnClickListener {
             val startingCash = inputStartingCash.text.toString()
             val cashAdded = inputCashAdded.text.toString()
-            if (cashAdded.isNotEmpty() && cashAdded != "0") {
-                cashAddedList.add(Integer.parseInt(cashAdded))
-            }
             if (startingCash.isEmpty() || startingCash == "0"){
                 inputStartingCash.error = "Invalid"
             }
             else {
-                val cashDrawer = CashDrawer(cashierID+setCalendarFormat(today),
+                if (cashAdded.isNotEmpty() && cashAdded != "0") {
+                    cashDrawer.cashAdded.add(Integer.parseInt(cashAdded))
+                }
+                val newCashDrawer = CashDrawer(cashierID+setCalendarFormat(today),
                     cashierID
-
                     ,Integer.parseInt(startingCash),
-                    cashAddedList,
+                    cashDrawer.cashAdded,
                     System.currentTimeMillis())
-                saveStartingCash(cashierID,cashDrawer)
-                cashAddedList.clear()
+                saveStartingCash(newCashDrawer)
             }
         }
         if (!dialog.isShowing) {
@@ -211,7 +194,7 @@ class CashDrawerActivity : AppCompatActivity() {
         }
         return total
     }
-    private fun saveStartingCash(cashierID: String,cashDrawer: CashDrawer) {
+    private fun saveStartingCash(cashDrawer: CashDrawer) {
         firestore.collection(User.TABLE_NAME).document(LoginActivity.uid)
             .collection(CashDrawer.TABLE_NAME)
             .document(cashDrawer.cashDrawerID!!)
@@ -220,10 +203,19 @@ class CashDrawerActivity : AppCompatActivity() {
                 if (it.isSuccessful) {
                     dialog.dismiss()
                     Toast.makeText(this,"Success",Toast.LENGTH_SHORT).show()
-                    getAllTransactionsToday(today)
-                    getCashDrawerToday(cashierID,today)
                 }
             }
     }
+
+    override fun onTransactionClick(position: Int) {
+        transactionViewModel.setTransaction(transactionList[position])
+        val transactionDialog = TransactionDialog()
+        if (!transactionDialog.isAdded) {
+            transactionDialog.show(supportFragmentManager,"Transaction Dialog")
+        }
+    }
+
+
+
 
 }

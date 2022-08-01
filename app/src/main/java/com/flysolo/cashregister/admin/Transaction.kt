@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.flysolo.cashregister.adapter.TransactionAdapter
 import com.flysolo.cashregister.databinding.ActivityTransactionBinding
+import com.flysolo.cashregister.databinding.DialogTransactionBinding
+import com.flysolo.cashregister.dialog.TransactionDialog
 import com.flysolo.cashregister.firebase.FirebaseQueries
 import com.flysolo.cashregister.firebase.QueryDates
 import com.flysolo.cashregister.firebase.models.Items
@@ -181,10 +183,10 @@ class Transaction : AppCompatActivity() ,TransactionAdapter.OnTransactionClick {
     }
 
     override fun onTransactionClick(position: Int) {
-        Toast.makeText(this,transactionAdapter.getItem(position).transactionCashier,
-            Toast.LENGTH_SHORT).show()
         transactionViewModel.setTransaction(transactionAdapter.snapshots[position])
-
-
+        val transactionDialog = TransactionDialog()
+        if (!transactionDialog.isAdded) {
+            transactionDialog.show(supportFragmentManager,"Transaction Dialog")
+        }
     }
 }

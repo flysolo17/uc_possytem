@@ -10,15 +10,18 @@
         <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/drawable/dialog_bg.xml" value="0.234" />
         <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/drawable/ic_arrow___right_2.xml" value="0.2595" />
         <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/drawable/ic_baseline_add_24.xml" value="0.2595" />
+        <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/drawable/ic_drawer.xml" value="0.3225" />
         <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/drawable/search.xml" value="0.234" />
         <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/activity_accounts.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/activity_admin.xml" value="0.33" />
+        <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/activity_admin_cash_drawer.xml" value="0.35260416666666666" />
         <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/activity_attendance.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/activity_cash_drawer.xml" value="0.2" />
         <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/activity_cashier.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/activity_cashier_inventory.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/activity_cashier_login.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/activity_create_account.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/activity_employee_attendance.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/activity_inventory.xml" value="0.12268518518518519" />
         <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/activity_login.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/activity_main.xml" value="0.4" />
@@ -36,6 +39,7 @@
         <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/dialog_attendance.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/dialog_cash_drawe.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/dialog_show_item.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/dialog_transaction.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/fragment_account.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/fragment_add_inventory.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/fragment_cashier_pin_dialog.xml" value="0.25416666666666665" />
@@ -47,6 +51,7 @@
         <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/progress_dialog.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/row_accounts.xml" value="0.365625" />
         <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/row_attendance.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/row_cash_drawer.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/row_cashier.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/row_inventory.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/John Mark Ballangca/Desktop/CashRegister/app/src/main/res/layout/row_item_purchase.xml" value="0.25416666666666665" />

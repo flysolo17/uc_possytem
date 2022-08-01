@@ -19,11 +19,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:padding="10dp"
             android:layout_gravity="bottom"
             android:fontFamily="@font/poppins_semibold"
-            android:textSize="20sp"
+            android:textSize="28sp"
             android:textColor="@color/black"
-            android:text="Cash Register"/>
+            android:text="Mini POS"/>
     </FrameLayout>
 
 </LinearLayout>

@@ -1,51 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#D0DFFF"
-    tools:context=".activities.CashDrawerActivity">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="5dp"
+    android:layout_margin="10dp"
+    android:orientation="vertical">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-        <ImageButton
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_margin="10dp"
-            android:id="@+id/buttonBack"
-            android:background="@drawable/ic_arrow___left"
-            android:contentDescription="@string/back" />
-        <TextView
-            android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:padding="10dp"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/cash_drawer"
-            android:fontFamily="@font/poppins_medium"
-            android:textSize="16sp"
-            android:layout_weight="1"
-            android:textColor="@color/black"/>
-        <ImageButton
-            android:layout_margin="10dp"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:id="@+id/buttonSetCashDrawer"
-            android:background="@drawable/ic_edit"/>
-    </LinearLayout>
-
-    <GridLayout
-        android:id="@+id/mainGrid"
-        android:columnCount="2"
-        android:rowCount="3"
-        android:alignmentMode="alignMargins"
-        android:columnOrderPreserved="false"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:padding="14dp"
-        android:layout_margin="10dp"
-        android:background="@drawable/cards">
+            android:orientation="horizontal">
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/cashierProfile"
+                android:layout_width="60dp"
+                android:scaleType="centerCrop"
+                android:layout_height="60dp"
+                android:layout_margin="5dp"
+                android:src="@drawable/ic_profile" />
+                <TextView
+                    android:layout_margin="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textCashierName"
+                    android:text="@string/name"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"/>
+        </LinearLayout>
+        <GridLayout
+            android:id="@+id/mainGrid"
+            android:columnCount="2"
+            android:rowCount="3"
+            android:alignmentMode="alignMargins"
+            android:columnOrderPreserved="false"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:background="@drawable/cards">
 
 
             <LinearLayout
@@ -60,7 +57,7 @@
                     android:id="@+id/textStartingCash"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_semibold"
+                    android:fontFamily="@font/poppins_medium"
                     android:gravity="center"
                     android:text="@string/_0"
                     android:textColor="@color/black"
@@ -69,7 +66,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_medium"
+                    android:fontFamily="@font/poppins_light"
                     android:gravity="center"
                     android:text="@string/starting_cash"
                     android:textSize="16sp" />
@@ -91,14 +88,14 @@
                     android:textSize="20sp"
                     android:textColor="@color/black"
                     android:id="@+id/textCashAdded"
-                    android:fontFamily="@font/poppins_semibold"
+                    android:fontFamily="@font/poppins_medium"
                     android:text="@string/_0"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:textSize="16sp"
-                    android:fontFamily="@font/poppins_medium"
+                    android:fontFamily="@font/poppins_light"
                     android:text="@string/cash_added"/>
             </LinearLayout>
 
@@ -118,14 +115,14 @@
                     android:textSize="20sp"
                     android:textColor="@color/black"
                     android:id="@+id/textCashSales"
-                    android:fontFamily="@font/poppins_semibold"
+                    android:fontFamily="@font/poppins_medium"
                     android:text="@string/_0"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:textSize="16sp"
-                    android:fontFamily="@font/poppins_medium"
+                    android:fontFamily="@font/poppins_light"
                     android:text="@string/cash_sales"/>
             </LinearLayout>
 
@@ -143,7 +140,7 @@
                     android:textSize="20sp"
                     android:id="@+id/textTotal"
                     android:textColor="@color/black"
-                    android:fontFamily="@font/poppins_semibold"
+                    android:fontFamily="@font/poppins_medium"
                     android:text="@string/_0"/>
                 <TextView
                     android:layout_width="wrap_content"
@@ -153,29 +150,6 @@
                     android:fontFamily="@font/poppins_medium"
                     android:text="@string/total"/>
             </LinearLayout>
-    </GridLayout>
-    <LinearLayout
-        android:layout_marginTop="5dp"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:paddingTop="10dp"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:background="@drawable/cards2">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/poppins_medium"
-            android:gravity="center"
-            android:layout_margin="10dp"
-            android:text="Your Transactions Today"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/recyclerviewTransactions"
-            />
+        </GridLayout>
     </LinearLayout>
-
-</LinearLayout>
+</com.google.android.material.card.MaterialCardView>

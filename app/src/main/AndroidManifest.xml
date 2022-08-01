@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.flysolo.cashregister" >
+    package="com.flysolo.cashregister">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -24,7 +24,13 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.CashRegister" >
+        android:theme="@style/Theme.CashRegister">
+        <activity
+            android:name=".admin.AdminCashDrawer"
+            android:exported="false" />
+        <activity
+            android:name=".admin.EmployeeAttendance"
+            android:exported="false" />
         <activity
             android:name=".activities.CashierInventory"
             android:exported="false"
@@ -56,7 +62,7 @@
             android:exported="false" />
         <activity
             android:name=".SplashScreen"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

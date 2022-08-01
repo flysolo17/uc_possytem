@@ -20,7 +20,8 @@ class FirebaseQueries(val context: Context,val firebaseFirestore: FirebaseFirest
             .collection(TABLE_NAME!!).document().id
     }
     fun createAccount(user: User) {
-        firebaseFirestore.collection(User.TABLE_NAME).document(user.userId!!).set(user)
+        firebaseFirestore.collection(User.TABLE_NAME)
+            .document(user.userId!!).set(user)
             .addOnCompleteListener {
                 if (it.isSuccessful) {
                     Toast.makeText(context, "Account created successful", Toast.LENGTH_SHORT).show()
@@ -68,6 +69,7 @@ class FirebaseQueries(val context: Context,val firebaseFirestore: FirebaseFirest
                     }
                 }
         }
+
 
         fun getItemPurchased(itemPurchase: ItemPurchased) {
             firebaseFirestore.collection(User.TABLE_NAME)
@@ -130,6 +132,8 @@ class FirebaseQueries(val context: Context,val firebaseFirestore: FirebaseFirest
             .setQuery(query, Transaction::class.java)
             .build()
     }
+
+
     fun updateTransaction(transactionID : String,itemPurchasedList : List<ItemPurchased>) {
         firebaseFirestore.collection(User.TABLE_NAME).document(LoginActivity.uid)
             .collection(Transaction.TABLE_NAME)

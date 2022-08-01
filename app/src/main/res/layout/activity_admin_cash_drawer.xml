@@ -4,16 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#E8F5E9"
     android:orientation="vertical"
-    tools:context=".admin.Inventory">
+    android:background="#E8F5E9"
+    tools:context=".admin.AdminCashDrawer">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
         android:gravity="center_vertical"
         android:orientation="horizontal">
         <ImageButton
-
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_margin="10dp"
@@ -23,7 +22,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/inventory"
+            android:text="@string/cash_drawer"
             android:fontFamily="@font/poppins_medium"
             android:textSize="16sp"
             android:textColor="@color/black"/>
@@ -31,22 +30,22 @@
     <LinearLayout
         android:layout_marginTop="5dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="10dp"
+        android:layout_height="0dp"
+        android:paddingTop="10dp"
+        android:layout_weight="1"
         android:orientation="vertical"
         android:background="@drawable/cards2">
-
-            <ImageButton
-                android:id="@+id/buttonAddInventory"
-                android:layout_gravity="end"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_margin="10dp"
-                android:background="@drawable/ic_add"/>
-
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/date"
+            android:padding="10dp"
+            android:layout_gravity="end"
+            android:id="@+id/buttonShowCalendar"
+            style="@style/Widget.MaterialComponents.Button.TextButton"/>
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/recyclerviewItems"/>
+            android:id="@+id/recyclerviewCashDrawer"/>
     </LinearLayout>
 </LinearLayout>
