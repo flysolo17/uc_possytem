@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import com.flysolo.cashregister.MainActivity
 import com.flysolo.cashregister.dialog.ProgressDialog
 import com.flysolo.cashregister.databinding.ActivityLoginBinding
+import com.flysolo.cashregister.dialog.ForgotPasswordFragment
 import com.flysolo.cashregister.firebase.models.User
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
@@ -69,11 +70,17 @@ class LoginActivity : AppCompatActivity() {
         binding.buttonSignUp.setOnClickListener{
             startActivity(Intent(this,CreateAccountActivity::class.java))
         }
+        binding.buttonForgotPassword.setOnClickListener {
+            val forgotPasswordFragment = ForgotPasswordFragment()
+            if (!forgotPasswordFragment.isAdded) {
+                forgotPasswordFragment.show(supportFragmentManager,"Forgot Password")
+            }
+        }
     }
+
 
     private fun signInWithEmail(email : String, password : String){
         progressDialog.loading()
-
         firebaseAuth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener {
                 if (it.isSuccessful) {

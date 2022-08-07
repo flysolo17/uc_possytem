@@ -153,6 +153,15 @@
                 android:textSize="16sp"
                 android:fontFamily="@font/poppins_semibold"/>
         </LinearLayout>
+        <Button
+            android:id="@+id/buttonShare"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:text="Share"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:textAllCaps="false"/>
     </LinearLayout>
 
 </ScrollView>

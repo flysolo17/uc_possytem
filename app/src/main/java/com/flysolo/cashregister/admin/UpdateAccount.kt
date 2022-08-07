@@ -16,6 +16,7 @@ import com.flysolo.cashregister.R
 import com.flysolo.cashregister.databinding.ActivityUpdateAccountBinding
 
 import com.flysolo.cashregister.dialog.ProgressDialog
+import com.flysolo.cashregister.dialog.UpdatePasswordFragment
 import com.flysolo.cashregister.firebase.models.User
 import com.flysolo.cashregister.viewmodels.UserViewModel
 import com.google.firebase.firestore.FirebaseFirestore
@@ -75,6 +76,16 @@ class UpdateAccount : AppCompatActivity() {
             }
         binding.buttonBack.setOnClickListener {
             finish()
+        }
+        binding.buttonChangePassword.setOnClickListener {
+            val updatePasswordFragment = UpdatePasswordFragment()
+            if (user != null) {
+                userViewModel.setUser(user!!)
+                if (!updatePasswordFragment.isAdded) {
+                    updatePasswordFragment.show(supportFragmentManager,"Update Password")
+                }
+            }
+
         }
 
         binding.buttonSaveChanges.setOnClickListener {

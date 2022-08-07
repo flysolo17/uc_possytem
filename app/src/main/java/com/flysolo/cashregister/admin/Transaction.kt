@@ -42,8 +42,6 @@ class Transaction : AppCompatActivity() ,TransactionAdapter.OnTransactionClick {
         itemList = mutableListOf()
         firebaseFirestore = FirebaseFirestore.getInstance()
         firebaseQueries = FirebaseQueries(this,firebaseFirestore)
-
-
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

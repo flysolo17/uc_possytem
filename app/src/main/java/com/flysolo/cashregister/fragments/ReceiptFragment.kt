@@ -102,6 +102,10 @@ class ReceiptFragment : DialogFragment() {
                 snack.show()
             }
         }, 1000)
+        binding.buttonShare.setOnClickListener {
+            shareImageNow()
+
+        }
     }
     private fun addView(itemPurchased: ItemPurchased) {
         val receiptView: View = layoutInflater.inflate(R.layout.row_receipt, null, false)
