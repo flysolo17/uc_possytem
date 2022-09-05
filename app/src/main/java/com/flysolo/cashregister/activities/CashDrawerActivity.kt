@@ -132,9 +132,7 @@ class CashDrawerActivity : AppCompatActivity(),CashierTransactions.OnCashierTran
         val cashAdded = computeCashAdded(cashDrawer.cashAdded)
         binding.textStartingCash.text = decimalFormat.format(cashDrawer.startingCash)
         binding.textCashAdded.text = decimalFormat.format(cashAdded)
-        binding.textCashSales.text = decimalFormat.format(computeTotalSales(transactions))
         val total : Double = (cashDrawer.startingCash!! + cashAdded) + computeTotalSales(transactions)
-        binding.textTotal.text = decimalFormat.format(total)
     }
 
     private fun computeTotalSales(transactions: List<Transaction>): Double {

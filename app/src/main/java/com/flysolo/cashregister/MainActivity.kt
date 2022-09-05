@@ -112,8 +112,6 @@ class MainActivity : AppCompatActivity() {
                         val transaction = documents.toObject(Transaction::class.java)
                         transactionList.add(transaction)
                     }
-                    binding.textCashierSales.text = getCashierTotalSales(transactionList,cashierName)
-                    binding.textCostOfGoods.text = getCashierCostOfGoods(transactionList, cashierName)
                 }
             }
     }
