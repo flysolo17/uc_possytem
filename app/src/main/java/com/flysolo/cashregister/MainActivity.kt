@@ -12,7 +12,7 @@ import android.view.WindowManager
 import android.widget.Toast
 
 import com.flysolo.cashregister.activities.*
-import com.flysolo.cashregister.admin.Inventory
+
 
 import com.flysolo.cashregister.databinding.ActivityMainBinding
 import com.flysolo.cashregister.firebase.QueryDates
@@ -155,7 +155,7 @@ class MainActivity : AppCompatActivity() {
     private fun displayCashierInfo(cashier: Cashier?) {
         if (cashier != null) {
             if (cashier.cashierProfile!!.isNotEmpty()){
-                Picasso.get().load(cashier.cashierProfile).into(binding.cashierProfile)
+                Picasso.get().load(cashier.cashierProfile).into(binding.cashierProfile);
             }
             binding.textCashierName.text = cashier.cashierName
         }

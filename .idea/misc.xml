@@ -4,12 +4,14 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Android/uc_possytem/app/src/main/res/layout/activity_cash_drawer.xml" value="0.33" />
+        <entry key="..\:/Android/uc_possytem/app/src/main/res/layout/activity_inventory.xml" value="0.18541666666666667" />
         <entry key="..\:/Android/uc_possytem/app/src/main/res/layout/activity_main.xml" value="0.358695652173913" />
+        <entry key="..\:/Android/uc_possytem/app/src/main/res/layout/fragment_update_inventory.xml" value="0.18541666666666667" />
         <entry key="..\:/Android/uc_possytem/app/src/main/res/layout/row_inventory.xml" value="0.67" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="11" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>
