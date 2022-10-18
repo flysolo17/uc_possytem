@@ -23,7 +23,7 @@ class CashierInventory : AppCompatActivity(),InventoryAdapter.ItemClick {
     private lateinit var firestore : FirebaseFirestore
     private fun init(uid : String) {
         firestore = FirebaseFirestore.getInstance()
-        inventoryAdapter = InventoryAdapter(this,getAllItems(uid),this)
+        inventoryAdapter = InventoryAdapter(this,getAllItems(uid),1,this)
         binding.recyclerviewItems.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL,false)
             adapter = inventoryAdapter

@@ -35,7 +35,7 @@ class Inventory : AppCompatActivity(),InventoryAdapter.ItemClick {
         firestore = FirebaseFirestore.getInstance()
         val uid = FirebaseAuth.getInstance().currentUser!!.uid
         inventoryViewModel = ViewModelProvider(this)[InventoryViewModel::class.java]
-        inventoryAdapter = InventoryAdapter(this,getAllItems(uid!!),this)
+        inventoryAdapter = InventoryAdapter(this,getAllItems(uid!!),0,this)
         binding.recyclerviewItems.apply {
             layoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
             adapter = inventoryAdapter

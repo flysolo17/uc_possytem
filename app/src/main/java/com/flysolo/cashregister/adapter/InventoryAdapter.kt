@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 
 import androidx.recyclerview.widget.RecyclerView
@@ -23,7 +24,7 @@ import com.flysolo.cashregister.firebase.models.Items
 import com.squareup.picasso.Picasso
 import java.text.DecimalFormat
 
-class InventoryAdapter(val context: Context, options: FirestoreRecyclerOptions<Items?>,val itemClick: ItemClick) :
+class InventoryAdapter(val context: Context, options: FirestoreRecyclerOptions<Items?>,val userType : Int, private val itemClick: ItemClick) :
     FirestoreRecyclerAdapter<Items, InventoryAdapter.InventoryViewModel>(options) {
 
     interface ItemClick {
@@ -50,6 +51,11 @@ class InventoryAdapter(val context: Context, options: FirestoreRecyclerOptions<I
         holder.itemView.setOnClickListener {
             itemClick.onItemClick(position)
         }
+        if (userType == 0) {
+            holder.layoutWholesale.visibility = View.VISIBLE
+        } else {
+            holder.layoutWholesale.visibility = View.INVISIBLE
+        }
     }
 
     inner class InventoryViewModel(itemView: View) :
@@ -60,5 +66,6 @@ class InventoryAdapter(val context: Context, options: FirestoreRecyclerOptions<I
         val itemPrice: TextView = itemView.findViewById(R.id.itemPrice)
         val itemQuantity: TextView = itemView.findViewById(R.id.itemQuantity)
         val itemImage : ImageView = itemView.findViewById(R.id.itemImage)
+        val layoutWholesale : LinearLayout = itemView.findViewById(R.id.layoutWholesale)
     }
 }
